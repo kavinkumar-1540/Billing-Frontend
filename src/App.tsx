@@ -5,6 +5,7 @@ import { Toaster } from 'sonner'
 import { ThemeProvider } from '@/components/theme-provider'
 import { AuthProvider } from '@/features/auth/AuthContext'
 import { ProtectedRoute } from '@/features/auth/ProtectedRoute'
+import { PublicOnlyRoute } from '@/features/auth/PublicOnlyRoute'
 import LoginPage from '@/features/auth/LoginPage'
 import { AppShell } from '@/layouts/AppShell'
 import DashboardPage from '@/features/dashboard/DashboardPage'
@@ -93,7 +94,14 @@ function App() {
         <AuthProvider>
           <BrowserRouter>
             <Routes>
-              <Route path="/login" element={<LoginPage />} />
+              <Route
+                path="/login"
+                element={
+                  <PublicOnlyRoute>
+                    <LoginPage />
+                  </PublicOnlyRoute>
+                }
+              />
               <Route
                 element={
                   <ProtectedRoute>
@@ -117,6 +125,7 @@ function App() {
                     element={<ModulePlaceholderPage title={item.label} />}
                   />
                 ))}
+                <Route path="*" element={<ModulePlaceholderPage title="Page not found" />} />
               </Route>
             </Routes>
           </BrowserRouter>
