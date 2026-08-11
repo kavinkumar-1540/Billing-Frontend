@@ -1,0 +1,130 @@
+import type { ComponentType } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Toaster } from 'sonner'
+import { ThemeProvider } from '@/components/theme-provider'
+import { AuthProvider } from '@/features/auth/AuthContext'
+import { ProtectedRoute } from '@/features/auth/ProtectedRoute'
+import LoginPage from '@/features/auth/LoginPage'
+import { AppShell } from '@/layouts/AppShell'
+import DashboardPage from '@/features/dashboard/DashboardPage'
+import CustomersPage from '@/features/customers/CustomersPage'
+import SuppliersPage from '@/features/suppliers/SuppliersPage'
+import ItemsPage from '@/features/items/ItemsPage'
+import StockPage from '@/features/inventory/StockPage'
+import StockMovementsPage from '@/features/inventory/StockMovementsPage'
+import StockAdjustmentsPage from '@/features/inventory/StockAdjustmentsPage'
+import SalesOrdersPage from '@/features/sales-orders/SalesOrdersPage'
+import SalesInvoicesPage from '@/features/sales-invoices/SalesInvoicesPage'
+import SalesInvoiceFormPage from '@/features/sales-invoices/SalesInvoiceFormPage'
+import SalesInvoiceDetailPage from '@/features/sales-invoices/SalesInvoiceDetailPage'
+import PurchaseOrdersPage from '@/features/purchase-orders/PurchaseOrdersPage'
+import PurchaseBillsPage from '@/features/purchase-bills/PurchaseBillsPage'
+import PurchaseBillFormPage from '@/features/purchase-bills/PurchaseBillFormPage'
+import CustomerReceiptsPage from '@/features/payments/CustomerReceiptsPage'
+import SupplierPaymentsPage from '@/features/payments/SupplierPaymentsPage'
+import CreditNotesPage from '@/features/credit-notes/CreditNotesPage'
+import CreditNoteFormPage from '@/features/credit-notes/CreditNoteFormPage'
+import DebitNotesPage from '@/features/debit-notes/DebitNotesPage'
+import DebitNoteFormPage from '@/features/debit-notes/DebitNoteFormPage'
+import TaxSettingsPage from '@/features/settings/TaxSettingsPage'
+import CompanySettingsPage from '@/features/settings/CompanySettingsPage'
+import UsersSettingsPage from '@/features/settings/UsersSettingsPage'
+import RolesSettingsPage from '@/features/settings/RolesSettingsPage'
+import SalesReportPage from '@/features/reports/SalesReportPage'
+import PurchaseReportPage from '@/features/reports/PurchaseReportPage'
+import GstReportPage from '@/features/reports/GstReportPage'
+import InventoryReportPage from '@/features/reports/InventoryReportPage'
+import OutstandingReportPage from '@/features/reports/OutstandingReportPage'
+import PaymentReportPage from '@/features/reports/PaymentReportPage'
+import AuditLogsPage from '@/features/audit/AuditLogsPage'
+import { ModulePlaceholderPage } from '@/components/ModulePlaceholderPage'
+import { NAV } from '@/layouts/nav-config'
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30_000,
+      retry: 1,
+    },
+  },
+})
+
+const BUILT_ROUTES: Record<string, ComponentType> = {
+  '/parties/customers': CustomersPage,
+  '/parties/suppliers': SuppliersPage,
+  '/inventory/items': ItemsPage,
+  '/inventory/stock': StockPage,
+  '/inventory/movements': StockMovementsPage,
+  '/inventory/adjustments': StockAdjustmentsPage,
+  '/sales/orders': SalesOrdersPage,
+  '/sales/invoices': SalesInvoicesPage,
+  '/purchases/orders': PurchaseOrdersPage,
+  '/purchases/bills': PurchaseBillsPage,
+  '/payments/receipts': CustomerReceiptsPage,
+  '/payments/supplier-payments': SupplierPaymentsPage,
+  '/sales/credit-notes': CreditNotesPage,
+  '/purchases/debit-notes': DebitNotesPage,
+  '/settings/tax': TaxSettingsPage,
+  '/settings/company': CompanySettingsPage,
+  '/settings/users': UsersSettingsPage,
+  '/settings/roles': RolesSettingsPage,
+  '/reports/sales': SalesReportPage,
+  '/reports/purchases': PurchaseReportPage,
+  '/reports/gst': GstReportPage,
+  '/reports/inventory': InventoryReportPage,
+  '/reports/outstanding': OutstandingReportPage,
+  '/reports/payments': PaymentReportPage,
+  '/reports/audit': AuditLogsPage,
+}
+
+const placeholderRoutes = NAV.flatMap((group) =>
+  group.sections.flatMap((section) =>
+    section.items
+      .filter((item) => item.to !== '/' && !BUILT_ROUTES[item.to])
+      .map((item) => item),
+  ),
+)
+
+function App() {
+  return (
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route
+                element={
+                  <ProtectedRoute>
+                    <AppShell />
+                  </ProtectedRoute>
+                }
+              >
+                <Route path="/" element={<DashboardPage />} />
+                <Route path="/sales/invoices/new" element={<SalesInvoiceFormPage />} />
+                <Route path="/sales/invoices/:id" element={<SalesInvoiceDetailPage />} />
+                <Route path="/purchases/bills/new" element={<PurchaseBillFormPage />} />
+                <Route path="/sales/credit-notes/new" element={<CreditNoteFormPage />} />
+                <Route path="/purchases/debit-notes/new" element={<DebitNoteFormPage />} />
+                {Object.entries(BUILT_ROUTES).map(([path, Component]) => (
+                  <Route key={path} path={path} element={<Component />} />
+                ))}
+                {placeholderRoutes.map((item) => (
+                  <Route
+                    key={item.to}
+                    path={item.to}
+                    element={<ModulePlaceholderPage title={item.label} />}
+                  />
+                ))}
+              </Route>
+            </Routes>
+          </BrowserRouter>
+          <Toaster richColors position="top-right" />
+        </AuthProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
+  )
+}
+
+export default App
