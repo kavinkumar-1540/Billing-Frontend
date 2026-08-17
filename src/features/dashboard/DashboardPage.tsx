@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query'
 import {
   IndianRupee,
   ShoppingBag,
@@ -13,6 +14,7 @@ import {
 import { PageHeader } from '@/components/PageHeader'
 import { StatTile } from '@/components/StatTile'
 import { Button } from '@/components/ui/button'
+import { fetchParties } from '@/features/parties/parties.api'
 import { SalesPurchasesTrendChart } from './SalesPurchasesTrendChart'
 
 const DATE_FILTERS = ['Today', 'This Week', 'This Month', 'This Quarter', 'This Year']
@@ -28,6 +30,11 @@ const QUICK_ACTIONS = [
 ]
 
 export default function DashboardPage() {
+  const { data: customers } = useQuery({
+    queryKey: ['parties', 'CUSTOMER', 'count'],
+    queryFn: () => fetchParties('CUSTOMER', { limit: 1 }),
+  })
+
   return (
     <div>
       <PageHeader
@@ -52,18 +59,13 @@ export default function DashboardPage() {
         }
       />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6">
         <StatTile label="Total Sales (MTD)" value="₹5,90,000" icon={IndianRupee} delta={{ value: '12.4% vs last month', direction: 'up' }} />
         <StatTile label="Total Purchases (MTD)" value="₹4,10,000" icon={ShoppingBag} delta={{ value: '5.1% vs last month', direction: 'up' }} />
         <StatTile label="Receivables" value="₹2,35,400" icon={Landmark} />
         <StatTile label="Payables" value="₹1,82,900" icon={Wallet} />
-      </div>
-
-      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatTile label="Outstanding Invoices" value="14" icon={ReceiptText} />
-        <StatTile label="Outstanding Purchase Bills" value="6" icon={Truck} />
         <StatTile label="Stock Value" value="₹8,40,200" icon={Package} />
-        <StatTile label="Low Stock Items" value="3" icon={Package} delta={{ value: 'needs attention', direction: 'down' }} />
+        <StatTile label="Customer Count" value={customers ? String(customers.total) : '—'} icon={Users} />
       </div>
 
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">

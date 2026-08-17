@@ -54,7 +54,7 @@ export default function LoginPage() {
           <div className="flex size-9 items-center justify-center rounded-lg bg-white/15">
             <Receipt className="size-5" />
           </div>
-          <span className="text-lg font-semibold">Billing Suite</span>
+          <span className="text-lg font-semibold">ST Billing</span>
         </div>
 
         <h1 className="text-4xl font-semibold leading-tight tracking-tight">
@@ -85,7 +85,7 @@ export default function LoginPage() {
           <div className="flex size-10 items-center justify-center rounded-lg bg-white/10">
             <Receipt className="size-5 text-white" />
           </div>
-          <span className="text-lg font-semibold text-white">Billing Suite</span>
+          <span className="text-lg font-semibold text-white">ST Billing</span>
         </div>
 
         <div className="mb-6">
@@ -155,7 +155,7 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        <p className="mt-8 text-center text-xs text-white/40">Billing Suite</p>
+        <p className="mt-8 text-center text-xs text-white/40">ST Billing</p>
       </div>
     </div>
   )

@@ -36,12 +36,12 @@ export default function SalesOrdersPage() {
 
   return (
     <div>
-      <PageHeader title="Sales Orders" description="Orders confirmed with a customer, pending invoicing" />
+      <PageHeader title="Sales Quotation" description="Orders confirmed with a customer, pending invoicing" />
       {!isLoading && data?.items.length === 0 ? (
         <EmptyState
           icon={FileText}
-          title="No sales orders yet"
-          description="Sales orders convert into invoices once confirmed with the customer."
+          title="No sales quotations yet"
+          description="Sales quotations convert into invoices once confirmed with the customer."
         />
       ) : (
         <DataTable columns={columns} data={data?.items ?? []} rowKey={(o) => o._id} isLoading={isLoading} />

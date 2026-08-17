@@ -52,27 +52,27 @@ export default function PurchaseBillsPage() {
   return (
     <div>
       <PageHeader
-        title="Purchase Bills"
+        title="Purchase Invoice"
         actions={
           <Button size="sm" className="gap-1.5" onClick={() => navigate('/purchases/bills/new')}>
             <Plus className="size-4" />
-            New Bill
+            New Invoice
           </Button>
         }
       />
 
       <div className="mb-4">
-        <SearchInput value={search} onChange={setSearch} placeholder="Search bill number or supplier…" />
+        <SearchInput value={search} onChange={setSearch} placeholder="Search invoice number or supplier…" />
       </div>
 
       {!isLoading && data?.items.length === 0 && !debouncedSearch ? (
         <EmptyState
           icon={Truck}
-          title="No purchase bills found"
-          description="Record your first supplier bill to update inventory and track payables."
+          title="No purchase invoices found"
+          description="Record your first supplier invoice to update inventory and track payables."
           action={
             <Button size="sm" onClick={() => navigate('/purchases/bills/new')}>
-              Confirm Bill
+              Confirm Invoice
             </Button>
           }
         />
@@ -82,7 +82,7 @@ export default function PurchaseBillsPage() {
           data={data?.items ?? []}
           rowKey={(b) => b._id}
           isLoading={isLoading}
-          emptyTitle="No bills match your search"
+          emptyTitle="No invoices match your search"
         />
       )}
     </div>

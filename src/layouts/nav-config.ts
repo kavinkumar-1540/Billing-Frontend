@@ -11,7 +11,6 @@ import {
   Landmark,
   Boxes,
   PackageSearch,
-  ArrowLeftRight,
   SlidersHorizontal,
   Users,
   Building2,
@@ -57,7 +56,7 @@ export const NAV: NavGroup[] = [
         label: 'Sales',
         icon: ShoppingCart,
         items: [
-          { label: 'Sales Orders', to: '/sales/orders', icon: FileText },
+          { label: 'Sales Quotation', to: '/sales/orders', icon: FileText },
           { label: 'Sales Invoices', to: '/sales/invoices', icon: ReceiptText },
           { label: 'Credit Notes', to: '/sales/credit-notes', icon: Undo2 },
         ],
@@ -66,9 +65,10 @@ export const NAV: NavGroup[] = [
         label: 'Purchases',
         icon: Truck,
         items: [
-          { label: 'Purchase Orders', to: '/purchases/orders', icon: FileText },
-          { label: 'Purchase Bills', to: '/purchases/bills', icon: ReceiptText },
+          { label: 'Purchase Quotation', to: '/purchases/orders', icon: FileText },
+          { label: 'Purchase Invoice', to: '/purchases/bills', icon: ReceiptText },
           { label: 'Debit Notes', to: '/purchases/debit-notes', icon: RotateCcw },
+          { label: 'Bill Adjustment', to: '/purchases/bill-adjustments', icon: SlidersHorizontal },
         ],
       },
       {
@@ -89,8 +89,6 @@ export const NAV: NavGroup[] = [
         icon: Boxes,
         items: [
           { label: 'Items', to: '/inventory/items', icon: PackageSearch },
-          { label: 'Stock', to: '/inventory/stock', icon: Boxes },
-          { label: 'Stock Movements', to: '/inventory/movements', icon: ArrowLeftRight },
           { label: 'Stock Adjustments', to: '/inventory/adjustments', icon: SlidersHorizontal },
         ],
       },
@@ -122,7 +120,6 @@ export const NAV: NavGroup[] = [
           { label: 'Inventory Reports', to: '/reports/inventory', icon: Boxes },
           { label: 'Outstanding Reports', to: '/reports/outstanding', icon: Wallet },
           { label: 'Payment Reports', to: '/reports/payments', icon: CreditCard },
-          { label: 'Audit Reports', to: '/reports/audit', icon: ShieldCheck },
         ],
       },
     ],

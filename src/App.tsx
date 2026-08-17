@@ -12,8 +12,6 @@ import DashboardPage from '@/features/dashboard/DashboardPage'
 import CustomersPage from '@/features/customers/CustomersPage'
 import SuppliersPage from '@/features/suppliers/SuppliersPage'
 import ItemsPage from '@/features/items/ItemsPage'
-import StockPage from '@/features/inventory/StockPage'
-import StockMovementsPage from '@/features/inventory/StockMovementsPage'
 import StockAdjustmentsPage from '@/features/inventory/StockAdjustmentsPage'
 import SalesOrdersPage from '@/features/sales-orders/SalesOrdersPage'
 import SalesInvoicesPage from '@/features/sales-invoices/SalesInvoicesPage'
@@ -28,6 +26,7 @@ import CreditNotesPage from '@/features/credit-notes/CreditNotesPage'
 import CreditNoteFormPage from '@/features/credit-notes/CreditNoteFormPage'
 import DebitNotesPage from '@/features/debit-notes/DebitNotesPage'
 import DebitNoteFormPage from '@/features/debit-notes/DebitNoteFormPage'
+import BillAdjustmentsPage from '@/features/bill-adjustments/BillAdjustmentsPage'
 import TaxSettingsPage from '@/features/settings/TaxSettingsPage'
 import CompanySettingsPage from '@/features/settings/CompanySettingsPage'
 import UsersSettingsPage from '@/features/settings/UsersSettingsPage'
@@ -38,7 +37,6 @@ import GstReportPage from '@/features/reports/GstReportPage'
 import InventoryReportPage from '@/features/reports/InventoryReportPage'
 import OutstandingReportPage from '@/features/reports/OutstandingReportPage'
 import PaymentReportPage from '@/features/reports/PaymentReportPage'
-import AuditLogsPage from '@/features/audit/AuditLogsPage'
 import { ModulePlaceholderPage } from '@/components/ModulePlaceholderPage'
 import { NAV } from '@/layouts/nav-config'
 
@@ -55,8 +53,6 @@ const BUILT_ROUTES: Record<string, ComponentType> = {
   '/parties/customers': CustomersPage,
   '/parties/suppliers': SuppliersPage,
   '/inventory/items': ItemsPage,
-  '/inventory/stock': StockPage,
-  '/inventory/movements': StockMovementsPage,
   '/inventory/adjustments': StockAdjustmentsPage,
   '/sales/orders': SalesOrdersPage,
   '/sales/invoices': SalesInvoicesPage,
@@ -66,6 +62,7 @@ const BUILT_ROUTES: Record<string, ComponentType> = {
   '/payments/supplier-payments': SupplierPaymentsPage,
   '/sales/credit-notes': CreditNotesPage,
   '/purchases/debit-notes': DebitNotesPage,
+  '/purchases/bill-adjustments': BillAdjustmentsPage,
   '/settings/tax': TaxSettingsPage,
   '/settings/company': CompanySettingsPage,
   '/settings/users': UsersSettingsPage,
@@ -76,7 +73,6 @@ const BUILT_ROUTES: Record<string, ComponentType> = {
   '/reports/inventory': InventoryReportPage,
   '/reports/outstanding': OutstandingReportPage,
   '/reports/payments': PaymentReportPage,
-  '/reports/audit': AuditLogsPage,
 }
 
 const placeholderRoutes = NAV.flatMap((group) =>

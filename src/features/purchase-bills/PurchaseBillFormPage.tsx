@@ -76,8 +76,8 @@ export default function PurchaseBillFormPage() {
   return (
     <div>
       <PageHeader
-        title="New Purchase Bill"
-        description="Record a supplier bill and update inventory"
+        title="New Purchase Invoice"
+        description="Record a supplier invoice and update inventory"
         actions={
           <Button variant="outline" size="sm" onClick={() => navigate('/purchases/bills')}>
             Cancel

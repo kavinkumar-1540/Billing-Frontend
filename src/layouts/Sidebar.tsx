@@ -30,7 +30,7 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
       >
         <div className="flex h-14 items-center gap-2 border-b px-4">
           <Receipt className="size-5 shrink-0 text-primary" />
-          {!collapsed && <span className="truncate text-sm font-semibold">Billing Suite</span>}
+          {!collapsed && <span className="truncate text-sm font-semibold">ST Billing</span>}
           <button
             type="button"
             onClick={onMobileClose}

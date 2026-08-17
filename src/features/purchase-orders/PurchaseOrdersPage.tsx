@@ -36,12 +36,12 @@ export default function PurchaseOrdersPage() {
 
   return (
     <div>
-      <PageHeader title="Purchase Orders" description="Orders confirmed with a supplier, pending billing" />
+      <PageHeader title="Purchase Quotation" description="Orders confirmed with a supplier, pending billing" />
       {!isLoading && data?.items.length === 0 ? (
         <EmptyState
           icon={FileText}
-          title="No purchase orders yet"
-          description="Purchase orders convert into bills once goods are received."
+          title="No purchase quotations yet"
+          description="Purchase quotations convert into invoices once goods are received."
         />
       ) : (
         <DataTable columns={columns} data={data?.items ?? []} rowKey={(o) => o._id} isLoading={isLoading} />
