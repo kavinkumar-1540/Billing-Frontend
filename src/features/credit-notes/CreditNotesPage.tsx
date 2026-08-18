@@ -34,7 +34,7 @@ export default function CreditNotesPage() {
       key: 'pdf',
       header: '',
       align: 'right',
-      render: (n) => <ViewPdfButton docType="credit-note" id={n._id} />,
+      render: (n) => <ViewPdfButton docType="credit-note" id={n._id} title={n.noteNumber} />,
     },
   ]
 

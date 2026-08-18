@@ -46,7 +46,7 @@ export default function SalesInvoicesPage() {
       key: 'pdf',
       header: '',
       align: 'right',
-      render: (i) => <ViewPdfButton docType="sales-invoice" id={i._id} />,
+      render: (i) => <ViewPdfButton docType="sales-invoice" id={i._id} title={i.invoiceNumber} />,
     },
   ]
 

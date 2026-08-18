@@ -124,7 +124,7 @@ export function ItemFormSheet({ open, onOpenChange, editing }: ItemFormSheetProp
                 <Label htmlFor="itemType">Type</Label>
                 <select
                   id="itemType"
-                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm"
+                  className="glass-input flex h-9 w-full cursor-pointer rounded-xl px-3 text-sm font-medium"
                   value={form.itemType}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, itemType: e.target.value as ItemFormValues['itemType'] }))
@@ -139,7 +139,7 @@ export function ItemFormSheet({ open, onOpenChange, editing }: ItemFormSheetProp
               <Label htmlFor="category">Category</Label>
               <select
                 id="category"
-                className="flex h-9 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm"
+                className="glass-input flex h-9 w-full cursor-pointer rounded-xl px-3 text-sm font-medium"
                 value={form.categoryId ?? ''}
                 onChange={(e) => setForm((f) => ({ ...f, categoryId: e.target.value || undefined }))}
               >
@@ -181,7 +181,7 @@ export function ItemFormSheet({ open, onOpenChange, editing }: ItemFormSheetProp
               <Label htmlFor="taxRate">GST rate</Label>
               <select
                 id="taxRate"
-                className="flex h-9 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm"
+                className="glass-input flex h-9 w-full cursor-pointer rounded-xl px-3 text-sm font-medium"
                 value={form.taxRateId ?? ''}
                 onChange={(e) => setForm((f) => ({ ...f, taxRateId: e.target.value || undefined }))}
               >

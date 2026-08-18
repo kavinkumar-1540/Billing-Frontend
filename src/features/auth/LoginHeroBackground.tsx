@@ -10,22 +10,22 @@ export function LoginHeroBackground() {
       <defs>
         <linearGradient id="ribbon-light" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#e8f0ff" stopOpacity="0.95" />
-          <stop offset="55%" stopColor="#9ec2ff" stopOpacity="0.7" />
-          <stop offset="100%" stopColor="#3a63c8" stopOpacity="0.5" />
+          <stop offset="55%" stopColor="#0284c7" stopOpacity="0.7" />
+          <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.9" />
         </linearGradient>
         <linearGradient id="ribbon-mid" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#c3d8ff" stopOpacity="0.6" />
-          <stop offset="100%" stopColor="#1f3f8f" stopOpacity="0.35" />
+          <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.6" />
+          <stop offset="100%" stopColor="#1e3a8a" stopOpacity="0.5" />
         </linearGradient>
         <radialGradient id="ring-glow" cx="50%" cy="50%" r="50%">
           <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
-          <stop offset="45%" stopColor="#7fa8ff" stopOpacity="0.5" />
-          <stop offset="100%" stopColor="#3a63c8" stopOpacity="0" />
+          <stop offset="45%" stopColor="#38bdf8" stopOpacity="0.5" />
+          <stop offset="100%" stopColor="#0284c7" stopOpacity="0" />
         </radialGradient>
         <linearGradient id="torus" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#dce8ff" />
-          <stop offset="50%" stopColor="#4d78d6" />
-          <stop offset="100%" stopColor="#1a2f6b" />
+          <stop offset="50%" stopColor="#0284c7" />
+          <stop offset="100%" stopColor="#1e3a8a" />
         </linearGradient>
       </defs>
 

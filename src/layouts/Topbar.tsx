@@ -1,5 +1,21 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Search, Sun, Moon, Laptop, LogOut, ChevronsUpDown, Plus, Menu } from 'lucide-react'
+import {
+  Search,
+  Sun,
+  Moon,
+  Laptop,
+  LogOut,
+  ChevronDown,
+  Check,
+  Plus,
+  Menu,
+  Maximize2,
+  Minimize2,
+  Building,
+  User,
+  Shield,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
@@ -32,39 +48,65 @@ export function Topbar({
   const { session, activeCompany, switchCompany, logout } = useAuth()
   const { theme, setTheme } = useTheme()
   const navigate = useNavigate()
+  const [isFullscreen, setIsFullscreen] = useState(false)
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {})
+      setIsFullscreen(true)
+    } else {
+      document.exitFullscreen().catch(() => {})
+      setIsFullscreen(false)
+    }
+  }
 
   return (
-    <header className="flex h-14 items-center gap-2 border-b bg-background px-3 sm:gap-3 sm:px-4">
-      <Button variant="ghost" size="icon" className="md:hidden" onClick={onOpenMobileNav}>
+    <header className="sticky top-0 z-20 flex h-16 items-center gap-2 border-b border-white/10 bg-slate-950/85 px-3 shadow-[0_4px_25px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:gap-3 sm:px-4">
+      <Button variant="ghost" size="icon" className="lg:hidden" onClick={onOpenMobileNav}>
         <Menu className="size-4" />
       </Button>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="max-w-40 justify-between sm:max-w-56">
-            <span className="truncate">{activeCompany?.companyName ?? 'Select company'}</span>
-            <ChevronsUpDown className="size-3.5 opacity-60" />
+          <Button variant="outline" size="sm" className="max-w-40 justify-between gap-2 sm:max-w-56">
+            <span className="flex items-center gap-2 truncate">
+              <span className="flex size-5 shrink-0 items-center justify-center rounded-lg border border-cyan-400/30 bg-cyan-500/20 text-cyan-300">
+                <Building className="size-3" />
+              </span>
+              <span className="truncate">{activeCompany?.companyName ?? 'Select company'}</span>
+            </span>
+            <ChevronDown className="size-3.5 shrink-0 opacity-60" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-64">
-          <DropdownMenuLabel>Companies</DropdownMenuLabel>
+          <DropdownMenuLabel>Active Enterprise</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {session?.companies.map((c) => (
-            <DropdownMenuItem key={c.companyId} onClick={() => switchCompany(c.companyId)}>
-              {c.companyName}
+            <DropdownMenuItem
+              key={c.companyId}
+              onClick={() => switchCompany(c.companyId)}
+              className={c.companyId === activeCompany?.companyId ? 'bg-cyan-500/15 text-cyan-200' : undefined}
+            >
+              <Building className="size-4 shrink-0 text-cyan-400" />
+              <span className="flex-1 truncate">{c.companyName}</span>
+              {c.companyId === activeCompany?.companyId && <Check className="size-3.5 shrink-0 text-cyan-400" />}
             </DropdownMenuItem>
           ))}
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => navigate('/settings/company')}>
+            <Building className="size-4" /> Configure Company Settings
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
       <button
         type="button"
         onClick={onOpenSearch}
-        className="hidden h-9 flex-1 max-w-md items-center gap-2 rounded-md border bg-muted/40 px-3 text-sm text-muted-foreground hover:bg-muted sm:flex"
+        className="hidden h-9 flex-1 max-w-md items-center gap-2 rounded-xl border border-white/10 bg-slate-900/60 px-3 text-sm text-slate-400 hover:bg-slate-800/80 hover:text-slate-200 sm:flex"
       >
         <Search className="size-4" />
         <span>Search invoices, customers, items…</span>
-        <kbd className="ml-auto rounded border bg-background px-1.5 py-0.5 text-[10px]">⌘K</kbd>
+        <kbd className="ml-auto rounded bg-slate-800 border border-white/10 px-1.5 py-0.5 text-[10px] font-mono">⌘K</kbd>
       </button>
 
       <Button variant="ghost" size="icon" className="sm:hidden" onClick={onOpenSearch}>
@@ -76,7 +118,7 @@ export function Topbar({
       <Button
         variant="default"
         size="sm"
-        className="hidden gap-1.5 sm:inline-flex"
+        className="hidden gap-1.5 shadow-[0_4px_16px_rgba(6,182,212,0.35)] sm:inline-flex"
         onClick={() => navigate('/sales/invoices/new')}
       >
         <Plus className="size-4" />
@@ -85,10 +127,20 @@ export function Topbar({
       <Button
         variant="default"
         size="icon"
-        className="sm:hidden"
+        className="shadow-[0_4px_16px_rgba(6,182,212,0.35)] sm:hidden"
         onClick={() => navigate('/sales/invoices/new')}
       >
         <Plus className="size-4" />
+      </Button>
+
+      <Button
+        variant="ghost"
+        size="icon"
+        className="hidden sm:inline-flex"
+        onClick={toggleFullscreen}
+        title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen Display Mode'}
+      >
+        {isFullscreen ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />}
       </Button>
 
       <DropdownMenu>
@@ -118,7 +170,7 @@ export function Topbar({
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button type="button" className="rounded-full">
+          <button type="button" className="rounded-full transition-transform hover:scale-105">
             <Avatar>
               <AvatarFallback>{session ? initials(session.name) : '?'}</AvatarFallback>
             </Avatar>
@@ -130,10 +182,25 @@ export function Topbar({
             <div className="truncate text-xs font-normal text-muted-foreground">
               {session?.email}
             </div>
+            {activeCompany?.roleName && (
+              <div className="mt-1.5 inline-flex items-center rounded border border-cyan-500/30 bg-cyan-500/20 px-1.5 py-0.5 text-[10px] font-medium text-cyan-300">
+                {activeCompany.roleName}
+              </div>
+            )}
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={logout}>
-            <LogOut className="size-4" /> Log out
+          <DropdownMenuItem onClick={() => navigate('/settings/company')}>
+            <Building className="size-4" /> Company Profile
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate('/settings/users')}>
+            <User className="size-4" /> Users &amp; Team
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate('/settings/roles')}>
+            <Shield className="size-4" /> Roles &amp; Permissions
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={logout} className="font-medium text-rose-400 hover:!bg-rose-500/10 hover:!text-rose-300">
+            <LogOut className="size-4 text-rose-400" /> Sign Out / Switch Account
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

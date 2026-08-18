@@ -12,17 +12,17 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { fetchParties } from '@/features/parties/parties.api'
 import { fetchItems, fetchTaxRates } from '@/features/items/items.api'
-import { issueSalesInvoice } from './sales-invoices.api'
-import { previewDocument, type DraftLine } from './gst-preview.util'
+import { createSalesOrder } from './sales-orders.api'
+import { previewDocument, type DraftLine } from '@/features/sales-invoices/gst-preview.util'
 
 const COMPANY_STATE_CODE = '33' // Tamil Nadu — matches seeded demo company
 
-export default function SalesInvoiceFormPage() {
+export default function SalesOrderFormPage() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
   const [customerId, setCustomerId] = useState('')
-  const [invoiceDate, setInvoiceDate] = useState(() => new Date().toISOString().slice(0, 10))
+  const [orderDate, setOrderDate] = useState(() => new Date().toISOString().slice(0, 10))
   const [lines, setLines] = useState<DraftLine[]>([{ itemId: '', quantity: 1, rate: 0 }])
 
   const { data: allCustomers } = useQuery({
@@ -44,9 +44,9 @@ export default function SalesInvoiceFormPage() {
 
   const mutation = useMutation({
     mutationFn: () =>
-      issueSalesInvoice({
+      createSalesOrder({
         customerId,
-        invoiceDate,
+        orderDate,
         items: validLines.map((l) => ({
           itemId: l.itemId,
           quantity: l.quantity,
@@ -54,18 +54,17 @@ export default function SalesInvoiceFormPage() {
           discountPercent: l.discountPercent,
         })),
       }),
-    onSuccess: (invoice) => {
-      toast.success(`Invoice ${invoice.invoiceNumber} issued`)
-      void queryClient.invalidateQueries({ queryKey: ['sales-invoices'] })
-      void queryClient.invalidateQueries({ queryKey: ['items'] })
-      void navigate('/sales/invoices')
+    onSuccess: (order) => {
+      toast.success(`Sales quotation ${order.orderNumber} created`)
+      void queryClient.invalidateQueries({ queryKey: ['sales-orders'] })
+      void navigate('/sales/orders')
     },
     onError: (error: unknown) => {
       const message =
         error && typeof error === 'object' && 'response' in error
           ? ((error as { response?: { data?: { message?: string } } }).response?.data?.message ??
-            'Failed to issue invoice')
-          : 'Failed to issue invoice'
+            'Failed to create sales quotation')
+          : 'Failed to create sales quotation'
       toast.error(Array.isArray(message) ? message.join(', ') : message)
     },
   })
@@ -75,10 +74,10 @@ export default function SalesInvoiceFormPage() {
   return (
     <div>
       <PageHeader
-        title="New Sales Invoice"
-        description="Create a GST-compliant invoice for a customer"
+        title="New Sales Quotation"
+        description="Create a quotation for a customer, pending confirmation and invoicing"
         actions={
-          <Button variant="outline" size="sm" onClick={() => navigate('/sales/invoices')}>
+          <Button variant="outline" size="sm" onClick={() => navigate('/sales/orders')}>
             Cancel
           </Button>
         }
@@ -95,15 +94,15 @@ export default function SalesInvoiceFormPage() {
           <CardContent className="grid grid-cols-1 gap-4 p-0 sm:grid-cols-3">
             <PartySelector partyType="CUSTOMER" label="Customer *" value={customerId} onChange={setCustomerId} required />
             <div className="space-y-1.5">
-              <Label htmlFor="invoiceDate" className="text-xs font-semibold text-slate-300">
-                Invoice Date *
+              <Label htmlFor="orderDate" className="text-xs font-semibold text-slate-300">
+                Quotation Date *
               </Label>
               <Input
-                id="invoiceDate"
+                id="orderDate"
                 type="date"
                 required
-                value={invoiceDate}
-                onChange={(e) => setInvoiceDate(e.target.value)}
+                value={orderDate}
+                onChange={(e) => setOrderDate(e.target.value)}
               />
             </div>
             <div className="space-y-1.5">
@@ -120,11 +119,11 @@ export default function SalesInvoiceFormPage() {
         </div>
 
         <div className="sticky bottom-0 flex justify-end gap-2 border-t border-white/10 bg-slate-950/85 py-4 backdrop-blur-xl">
-          <Button type="button" variant="outline" onClick={() => navigate('/sales/invoices')}>
+          <Button type="button" variant="outline" onClick={() => navigate('/sales/orders')}>
             Cancel
           </Button>
           <Button type="submit" disabled={!canSubmit}>
-            {mutation.isPending ? 'Issuing…' : 'Issue Invoice'}
+            {mutation.isPending ? 'Creating…' : 'Create Quotation'}
           </Button>
         </div>
       </form>

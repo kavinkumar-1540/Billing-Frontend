@@ -18,10 +18,10 @@ export function PartySelector({ partyType, value, onChange, label, required }: P
 
   return (
     <div className="space-y-1.5">
-      {label && <label className="text-sm font-medium">{label}</label>}
+      {label && <label className="text-xs font-semibold text-slate-300">{label}</label>}
       <select
         required={required}
-        className="flex h-9 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm"
+        className="glass-input flex h-9 w-full cursor-pointer rounded-xl px-3 text-sm font-medium"
         value={value}
         onChange={(e) => onChange(e.target.value)}
       >

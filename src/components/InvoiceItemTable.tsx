@@ -22,10 +22,10 @@ export function InvoiceItemTable({ lines, previews, onChange }: InvoiceItemTable
   }
 
   return (
-    <div className="rounded-lg border">
+    <div className="glass-2 overflow-hidden rounded-2xl">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b bg-muted/40 text-left text-xs font-medium text-muted-foreground">
+          <tr className="border-b border-white/10 bg-slate-900/50 text-left text-xs font-medium text-slate-400">
             <th className="px-3 py-2">Item</th>
             <th className="w-20 px-3 py-2 text-right">Qty</th>
             <th className="w-28 px-3 py-2 text-right">Rate (₹)</th>
@@ -40,7 +40,7 @@ export function InvoiceItemTable({ lines, previews, onChange }: InvoiceItemTable
           {lines.map((line, i) => {
             const preview = previews[i]
             return (
-              <tr key={i} className="border-b last:border-0">
+              <tr key={i} className="border-b border-white/5 last:border-0 hover:bg-white/5">
                 <td className="px-3 py-2">
                   <ItemSelector value={line.itemId} onChange={(itemId) => updateLine(i, { itemId })} />
                 </td>
@@ -74,13 +74,13 @@ export function InvoiceItemTable({ lines, previews, onChange }: InvoiceItemTable
                     className="text-right"
                   />
                 </td>
-                <td className="px-3 py-2 text-right tabular-nums text-muted-foreground">
+                <td className="px-3 py-2 text-right tabular-nums text-slate-400">
                   {preview?.gstRatePercent ?? 0}%
                 </td>
-                <td className="px-3 py-2 text-right tabular-nums">
+                <td className="px-3 py-2 text-right tabular-nums text-slate-300">
                   ₹{(preview?.taxableValue ?? 0).toFixed(2)}
                 </td>
-                <td className="px-3 py-2 text-right font-medium tabular-nums">
+                <td className="px-3 py-2 text-right font-bold tabular-nums text-white">
                   ₹{(preview?.total ?? 0).toFixed(2)}
                 </td>
                 <td className="px-3 py-2 text-right">
@@ -88,7 +88,7 @@ export function InvoiceItemTable({ lines, previews, onChange }: InvoiceItemTable
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="size-7 text-muted-foreground hover:text-destructive"
+                    className="size-7 text-slate-400 hover:text-rose-400"
                     onClick={() => removeLine(i)}
                   >
                     <Trash2 className="size-3.5" />
@@ -99,12 +99,12 @@ export function InvoiceItemTable({ lines, previews, onChange }: InvoiceItemTable
           })}
         </tbody>
       </table>
-      <div className="border-t p-2">
+      <div className="border-t border-white/10 p-2">
         <Button
           type="button"
           variant="ghost"
           size="sm"
-          className="gap-1.5 text-muted-foreground"
+          className="gap-1.5 text-cyan-400 hover:text-cyan-300"
           onClick={() => onChange([...lines, { ...emptyLine }])}
         >
           <Plus className="size-4" />

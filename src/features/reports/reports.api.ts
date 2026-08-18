@@ -2,11 +2,16 @@ import { apiClient } from '@/lib/api-client'
 import type {
   DateRangeParams,
   GstReport,
+  GstTransactionRow,
   InventoryReportRow,
+  LedgerEntryRow,
+  MonthlyReportRow,
   OutstandingReportRow,
+  PartyLedgerBalanceRow,
   PaymentReportRow,
   PurchaseReportRow,
   SalesReportRow,
+  StockMovementReportRow,
 } from './reports.types'
 
 export async function fetchSalesReport(params: DateRangeParams): Promise<SalesReportRow[]> {
@@ -36,5 +41,35 @@ export async function fetchOutstandingReport(): Promise<OutstandingReportRow[]> 
 
 export async function fetchPaymentReport(params: DateRangeParams): Promise<PaymentReportRow[]> {
   const { data } = await apiClient.get<PaymentReportRow[]>('/reports/payments', { params })
+  return data
+}
+
+export async function fetchCreditorsReport(): Promise<PartyLedgerBalanceRow[]> {
+  const { data } = await apiClient.get<PartyLedgerBalanceRow[]>('/reports/creditors')
+  return data
+}
+
+export async function fetchDebtorsReport(): Promise<PartyLedgerBalanceRow[]> {
+  const { data } = await apiClient.get<PartyLedgerBalanceRow[]>('/reports/debtors')
+  return data
+}
+
+export async function fetchMonthlyReport(): Promise<MonthlyReportRow[]> {
+  const { data } = await apiClient.get<MonthlyReportRow[]>('/reports/monthly')
+  return data
+}
+
+export async function fetchGstRegisterReport(params: DateRangeParams): Promise<GstTransactionRow[]> {
+  const { data } = await apiClient.get<GstTransactionRow[]>('/reports/gst-register', { params })
+  return data
+}
+
+export async function fetchStockMovementReport(): Promise<StockMovementReportRow[]> {
+  const { data } = await apiClient.get<StockMovementReportRow[]>('/reports/stock-movement')
+  return data
+}
+
+export async function fetchLedgerReport(partyId: string): Promise<LedgerEntryRow[]> {
+  const { data } = await apiClient.get<LedgerEntryRow[]>('/reports/ledger', { params: { partyId } })
   return data
 }

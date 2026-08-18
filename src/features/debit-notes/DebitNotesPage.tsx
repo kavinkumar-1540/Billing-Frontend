@@ -34,7 +34,7 @@ export default function DebitNotesPage() {
       key: 'pdf',
       header: '',
       align: 'right',
-      render: (n) => <ViewPdfButton docType="debit-note" id={n._id} />,
+      render: (n) => <ViewPdfButton docType="debit-note" id={n._id} title={n.noteNumber} />,
     },
   ]
 

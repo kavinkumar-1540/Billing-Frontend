@@ -14,4 +14,10 @@ export interface CreateCompanyUserPayload {
   name: string
   password: string
   roleId: string
+  isActive?: boolean
+}
+
+export interface UpdateCompanyUserProfilePayload {
+  name?: string
+  email?: string
 }

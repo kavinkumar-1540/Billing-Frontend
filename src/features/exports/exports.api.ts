@@ -1,6 +1,15 @@
 import { apiClient } from '@/lib/api-client'
 
-export type ExportReportType = 'sales' | 'purchases' | 'gst' | 'inventory' | 'outstanding' | 'payments' | 'audit'
+export type ExportReportType =
+  | 'sales'
+  | 'purchases'
+  | 'gst'
+  | 'inventory'
+  | 'outstanding'
+  | 'payments'
+  | 'audit'
+  | 'creditors'
+  | 'debtors'
 
 export interface ExportDateRangeParams {
   from?: string

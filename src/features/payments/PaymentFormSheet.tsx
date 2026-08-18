@@ -150,7 +150,7 @@ export function PaymentFormSheet({ paymentType, open, onOpenChange }: PaymentFor
                 <Label htmlFor="method">Method *</Label>
                 <select
                   id="method"
-                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm"
+                  className="glass-input flex h-9 w-full cursor-pointer rounded-xl px-3 text-sm font-medium"
                   value={method}
                   onChange={(e) => setMethod(e.target.value as PaymentMethod)}
                 >

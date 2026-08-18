@@ -147,7 +147,7 @@ export default function AuditLogsPage() {
               {selected.before && (
                 <div>
                   <div className="mb-1 text-xs uppercase text-muted-foreground">Before</div>
-                  <pre className="max-h-48 overflow-auto rounded-md bg-muted p-3 text-xs">
+                  <pre className="max-h-48 overflow-auto rounded-xl bg-slate-950/60 border border-white/10 p-3 font-mono text-xs text-slate-300">
                     {JSON.stringify(selected.before, null, 2)}
                   </pre>
                 </div>
@@ -155,7 +155,7 @@ export default function AuditLogsPage() {
               {selected.after && (
                 <div>
                   <div className="mb-1 text-xs uppercase text-muted-foreground">After</div>
-                  <pre className="max-h-48 overflow-auto rounded-md bg-muted p-3 text-xs">
+                  <pre className="max-h-48 overflow-auto rounded-xl bg-slate-950/60 border border-white/10 p-3 font-mono text-xs text-slate-300">
                     {JSON.stringify(selected.after, null, 2)}
                   </pre>
                 </div>
@@ -163,7 +163,7 @@ export default function AuditLogsPage() {
               {selected.metadata && (
                 <div>
                   <div className="mb-1 text-xs uppercase text-muted-foreground">Metadata</div>
-                  <pre className="max-h-48 overflow-auto rounded-md bg-muted p-3 text-xs">
+                  <pre className="max-h-48 overflow-auto rounded-xl bg-slate-950/60 border border-white/10 p-3 font-mono text-xs text-slate-300">
                     {JSON.stringify(selected.metadata, null, 2)}
                   </pre>
                 </div>

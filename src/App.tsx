@@ -14,10 +14,12 @@ import SuppliersPage from '@/features/suppliers/SuppliersPage'
 import ItemsPage from '@/features/items/ItemsPage'
 import StockAdjustmentsPage from '@/features/inventory/StockAdjustmentsPage'
 import SalesOrdersPage from '@/features/sales-orders/SalesOrdersPage'
+import SalesOrderFormPage from '@/features/sales-orders/SalesOrderFormPage'
 import SalesInvoicesPage from '@/features/sales-invoices/SalesInvoicesPage'
 import SalesInvoiceFormPage from '@/features/sales-invoices/SalesInvoiceFormPage'
 import SalesInvoiceDetailPage from '@/features/sales-invoices/SalesInvoiceDetailPage'
 import PurchaseOrdersPage from '@/features/purchase-orders/PurchaseOrdersPage'
+import PurchaseOrderFormPage from '@/features/purchase-orders/PurchaseOrderFormPage'
 import PurchaseBillsPage from '@/features/purchase-bills/PurchaseBillsPage'
 import PurchaseBillFormPage from '@/features/purchase-bills/PurchaseBillFormPage'
 import CustomerReceiptsPage from '@/features/payments/CustomerReceiptsPage'
@@ -31,12 +33,7 @@ import TaxSettingsPage from '@/features/settings/TaxSettingsPage'
 import CompanySettingsPage from '@/features/settings/CompanySettingsPage'
 import UsersSettingsPage from '@/features/settings/UsersSettingsPage'
 import RolesSettingsPage from '@/features/settings/RolesSettingsPage'
-import SalesReportPage from '@/features/reports/SalesReportPage'
-import PurchaseReportPage from '@/features/reports/PurchaseReportPage'
-import GstReportPage from '@/features/reports/GstReportPage'
-import InventoryReportPage from '@/features/reports/InventoryReportPage'
-import OutstandingReportPage from '@/features/reports/OutstandingReportPage'
-import PaymentReportPage from '@/features/reports/PaymentReportPage'
+import ReportsPage from '@/features/reports/ReportsPage'
 import { ModulePlaceholderPage } from '@/components/ModulePlaceholderPage'
 import { NAV } from '@/layouts/nav-config'
 
@@ -67,12 +64,7 @@ const BUILT_ROUTES: Record<string, ComponentType> = {
   '/settings/company': CompanySettingsPage,
   '/settings/users': UsersSettingsPage,
   '/settings/roles': RolesSettingsPage,
-  '/reports/sales': SalesReportPage,
-  '/reports/purchases': PurchaseReportPage,
-  '/reports/gst': GstReportPage,
-  '/reports/inventory': InventoryReportPage,
-  '/reports/outstanding': OutstandingReportPage,
-  '/reports/payments': PaymentReportPage,
+  '/reports': ReportsPage,
 }
 
 const placeholderRoutes = NAV.flatMap((group) =>
@@ -106,8 +98,10 @@ function App() {
                 }
               >
                 <Route path="/" element={<DashboardPage />} />
+                <Route path="/sales/orders/new" element={<SalesOrderFormPage />} />
                 <Route path="/sales/invoices/new" element={<SalesInvoiceFormPage />} />
                 <Route path="/sales/invoices/:id" element={<SalesInvoiceDetailPage />} />
+                <Route path="/purchases/orders/new" element={<PurchaseOrderFormPage />} />
                 <Route path="/purchases/bills/new" element={<PurchaseBillFormPage />} />
                 <Route path="/sales/credit-notes/new" element={<CreditNoteFormPage />} />
                 <Route path="/purchases/debit-notes/new" element={<DebitNoteFormPage />} />

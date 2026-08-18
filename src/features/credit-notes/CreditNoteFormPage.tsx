@@ -6,6 +6,7 @@ import { PageHeader } from '@/components/PageHeader'
 import { InvoiceItemTable } from '@/components/InvoiceItemTable'
 import { GSTBreakdown } from '@/components/GSTBreakdown'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { fetchSalesInvoices } from '@/features/sales-invoices/sales-invoices.api'
@@ -101,40 +102,48 @@ export default function CreditNoteFormPage() {
         }}
         className="space-y-6"
       >
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="space-y-1.5">
-            <Label htmlFor="originalInvoice">Original Invoice *</Label>
-            <select
-              id="originalInvoice"
-              required
-              className="flex h-9 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm"
-              value={originalInvoiceId}
-              onChange={(e) => setOriginalInvoiceId(e.target.value)}
-            >
-              <option value="">Select invoice</option>
-              {invoices?.items.map((inv) => (
-                <option key={inv._id} value={inv._id}>
-                  {inv.invoiceNumber} — {inv.customerSnapshot.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="date">Date *</Label>
-            <Input id="date" type="date" required value={date} onChange={(e) => setDate(e.target.value)} />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="reason">Reason *</Label>
-            <Input
-              id="reason"
-              required
-              minLength={3}
-              placeholder="e.g. Damaged goods returned"
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-            />
-          </div>
-        </div>
+        <Card className="p-6">
+          <CardContent className="grid grid-cols-1 gap-4 p-0 sm:grid-cols-3">
+            <div className="space-y-1.5">
+              <Label htmlFor="originalInvoice" className="text-xs font-semibold text-slate-300">
+                Original Invoice *
+              </Label>
+              <select
+                id="originalInvoice"
+                required
+                className="glass-input flex h-9 w-full cursor-pointer rounded-xl px-3 text-sm font-medium"
+                value={originalInvoiceId}
+                onChange={(e) => setOriginalInvoiceId(e.target.value)}
+              >
+                <option value="">Select invoice</option>
+                {invoices?.items.map((inv) => (
+                  <option key={inv._id} value={inv._id}>
+                    {inv.invoiceNumber} — {inv.customerSnapshot.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="date" className="text-xs font-semibold text-slate-300">
+                Date *
+              </Label>
+              <Input id="date" type="date" required value={date} onChange={(e) => setDate(e.target.value)} />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="reason" className="text-xs font-semibold text-slate-300">
+                Reason *
+              </Label>
+              <Input
+                id="reason"
+                required
+                minLength={3}
+                placeholder="e.g. Damaged goods returned"
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+              />
+            </div>
+          </CardContent>
+        </Card>
 
         {originalInvoiceId && (
           <>
@@ -145,7 +154,7 @@ export default function CreditNoteFormPage() {
           </>
         )}
 
-        <div className="sticky bottom-0 flex justify-end gap-2 border-t bg-background py-4">
+        <div className="sticky bottom-0 flex justify-end gap-2 border-t border-white/10 bg-slate-950/85 py-4 backdrop-blur-xl">
           <Button type="button" variant="outline" onClick={() => navigate('/sales/credit-notes')}>
             Cancel
           </Button>

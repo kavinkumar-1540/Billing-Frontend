@@ -1,15 +1,18 @@
 import { useQuery } from '@tanstack/react-query'
-import { FileText } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { FileText, Plus } from 'lucide-react'
 import { PageHeader } from '@/components/PageHeader'
 import { DataTable, type DataTableColumn } from '@/components/DataTable'
 import { MoneyDisplay } from '@/components/MoneyDisplay'
 import { StatusBadge } from '@/components/StatusBadge'
 import { EmptyState } from '@/components/EmptyState'
 import { ViewPdfButton } from '@/components/ViewPdfButton'
+import { Button } from '@/components/ui/button'
 import { fetchSalesOrders } from './sales-orders.api'
 import type { SalesOrder } from './sales-orders.types'
 
 export default function SalesOrdersPage() {
+  const navigate = useNavigate()
   const { data, isLoading } = useQuery({
     queryKey: ['sales-orders'],
     queryFn: () => fetchSalesOrders({ limit: 50 }),
@@ -30,18 +33,32 @@ export default function SalesOrdersPage() {
       key: 'pdf',
       header: '',
       align: 'right',
-      render: (o) => <ViewPdfButton docType="sales-order" id={o._id} />,
+      render: (o) => <ViewPdfButton docType="sales-order" id={o._id} title={o.orderNumber} />,
     },
   ]
 
   return (
     <div>
-      <PageHeader title="Sales Quotation" description="Orders confirmed with a customer, pending invoicing" />
+      <PageHeader
+        title="Sales Quotation"
+        description="Orders confirmed with a customer, pending invoicing"
+        actions={
+          <Button size="sm" className="gap-1.5" onClick={() => navigate('/sales/orders/new')}>
+            <Plus className="size-4" />
+            New Quotation
+          </Button>
+        }
+      />
       {!isLoading && data?.items.length === 0 ? (
         <EmptyState
           icon={FileText}
           title="No sales quotations yet"
           description="Sales quotations convert into invoices once confirmed with the customer."
+          action={
+            <Button size="sm" onClick={() => navigate('/sales/orders/new')}>
+              Create Quotation
+            </Button>
+          }
         />
       ) : (
         <DataTable columns={columns} data={data?.items ?? []} rowKey={(o) => o._id} isLoading={isLoading} />

@@ -14,11 +14,3 @@ export async function fetchDocumentPdfBlob(docType: PdfDocumentType, id: string)
   })
   return response.data as Blob
 }
-
-export function openDocumentPdf(docType: PdfDocumentType, id: string): Promise<void> {
-  return fetchDocumentPdfBlob(docType, id).then((blob) => {
-    const url = URL.createObjectURL(blob)
-    window.open(url, '_blank')
-    setTimeout(() => URL.revokeObjectURL(url), 60_000)
-  })
-}

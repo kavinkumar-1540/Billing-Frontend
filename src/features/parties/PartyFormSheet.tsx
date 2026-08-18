@@ -154,7 +154,7 @@ export function PartyFormSheet({ partyType, open, onOpenChange, editing }: Party
               <Label htmlFor="state">State</Label>
               <select
                 id="state"
-                className="flex h-9 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm"
+                className="glass-input flex h-9 w-full cursor-pointer rounded-xl px-3 text-sm font-medium"
                 value={form.stateCode ?? ''}
                 onChange={(e) => {
                   const selected = INDIAN_STATES.find((s) => s.code === e.target.value)

@@ -131,7 +131,7 @@ export default function StockAdjustmentsPage() {
                 <select
                   id="item"
                   required
-                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm"
+                  className="glass-input flex h-9 w-full cursor-pointer rounded-xl px-3 text-sm font-medium"
                   value={form.itemId}
                   onChange={(e) => setForm((f) => ({ ...f, itemId: e.target.value }))}
                 >
@@ -147,7 +147,7 @@ export default function StockAdjustmentsPage() {
                 <Label htmlFor="direction">Direction *</Label>
                 <select
                   id="direction"
-                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm"
+                  className="glass-input flex h-9 w-full cursor-pointer rounded-xl px-3 text-sm font-medium"
                   value={form.direction}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, direction: e.target.value as StockDirection }))

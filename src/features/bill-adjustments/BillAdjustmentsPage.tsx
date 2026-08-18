@@ -153,7 +153,7 @@ export default function BillAdjustmentsPage() {
                 <select
                   id="purchaseBill"
                   required
-                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm"
+                  className="glass-input flex h-9 w-full cursor-pointer rounded-xl px-3 text-sm font-medium"
                   value={purchaseBillId}
                   onChange={(e) => setPurchaseBillId(e.target.value)}
                 >
@@ -181,7 +181,7 @@ export default function BillAdjustmentsPage() {
                 <select
                   id="adjustmentType"
                   required
-                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm"
+                  className="glass-input flex h-9 w-full cursor-pointer rounded-xl px-3 text-sm font-medium"
                   value={adjustmentType}
                   onChange={(e) => setAdjustmentType(e.target.value as BillAdjustmentType)}
                 >

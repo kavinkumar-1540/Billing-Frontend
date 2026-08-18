@@ -45,7 +45,7 @@ export default function PurchaseBillsPage() {
       key: 'pdf',
       header: '',
       align: 'right',
-      render: (b) => <ViewPdfButton docType="purchase-bill" id={b._id} />,
+      render: (b) => <ViewPdfButton docType="purchase-bill" id={b._id} title={b.billNumber} />,
     },
   ]
 

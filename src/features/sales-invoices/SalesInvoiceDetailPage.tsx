@@ -44,7 +44,7 @@ export default function SalesInvoiceDetailPage() {
               <ArrowLeft className="size-4" />
               Back
             </Button>
-            <ViewPdfButton docType="sales-invoice" id={invoice._id} />
+            <ViewPdfButton docType="sales-invoice" id={invoice._id} title={invoice.invoiceNumber} />
             {invoice.status !== 'CANCELLED' && (
               <Button
                 variant="destructive"
@@ -70,7 +70,7 @@ export default function SalesInvoiceDetailPage() {
         <CardContent className="p-0">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b bg-muted/40 text-left text-xs text-muted-foreground">
+              <tr className="border-b border-white/10 bg-slate-900/50 text-left text-xs text-slate-400">
                 <th className="px-4 py-2">Item</th>
                 <th className="px-4 py-2">HSN</th>
                 <th className="px-4 py-2 text-right">Qty</th>
@@ -81,7 +81,7 @@ export default function SalesInvoiceDetailPage() {
             </thead>
             <tbody>
               {invoice.items.map((line, idx) => (
-                <tr key={idx} className="border-b last:border-0">
+                <tr key={idx} className="border-b border-white/5 last:border-0 hover:bg-white/5">
                   <td className="px-4 py-2">{line.name}</td>
                   <td className="px-4 py-2">{line.hsnSac ?? '—'}</td>
                   <td className="px-4 py-2 text-right">{line.quantity}</td>
@@ -100,34 +100,34 @@ export default function SalesInvoiceDetailPage() {
       </Card>
 
       <div className="flex justify-end">
-        <div className="w-full max-w-xs space-y-1.5 rounded-lg border bg-card p-4 text-sm">
-          <div className="flex justify-between text-muted-foreground">
+        <div className="glass-2 w-full max-w-xs space-y-2.5 rounded-2xl p-5 text-sm">
+          <div className="flex justify-between text-slate-300">
             <span>Taxable Amount</span>
             <MoneyDisplay paise={invoice.taxSummary.taxableAmount} />
           </div>
           {invoice.taxSummary.cgst > 0 && (
-            <div className="flex justify-between text-muted-foreground">
+            <div className="flex justify-between text-slate-300">
               <span>CGST</span>
               <MoneyDisplay paise={invoice.taxSummary.cgst} />
             </div>
           )}
           {invoice.taxSummary.sgst > 0 && (
-            <div className="flex justify-between text-muted-foreground">
+            <div className="flex justify-between text-slate-300">
               <span>SGST</span>
               <MoneyDisplay paise={invoice.taxSummary.sgst} />
             </div>
           )}
           {invoice.taxSummary.igst > 0 && (
-            <div className="flex justify-between text-muted-foreground">
+            <div className="flex justify-between text-slate-300">
               <span>IGST</span>
               <MoneyDisplay paise={invoice.taxSummary.igst} />
             </div>
           )}
-          <div className="border-t pt-1.5 flex justify-between font-semibold">
+          <div className="flex justify-between border-t border-white/15 pt-2 text-base font-extrabold text-white">
             <span>Grand Total</span>
-            <MoneyDisplay paise={invoice.taxSummary.grandTotal} />
+            <span className="font-mono text-cyan-300"><MoneyDisplay paise={invoice.taxSummary.grandTotal} /></span>
           </div>
-          <div className="flex justify-between text-destructive">
+          <div className="flex justify-between text-rose-400">
             <span>Balance Due</span>
             <MoneyDisplay paise={invoice.balanceDue} />
           </div>

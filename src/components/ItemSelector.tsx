@@ -15,7 +15,7 @@ export function ItemSelector({ value, onChange }: ItemSelectorProps) {
   return (
     <select
       required
-      className="flex h-9 w-full rounded-md border border-input bg-background px-2 text-sm shadow-sm"
+      className="glass-input flex h-9 w-full cursor-pointer rounded-lg px-2 text-sm font-medium"
       value={value}
       onChange={(e) => onChange(e.target.value)}
     >

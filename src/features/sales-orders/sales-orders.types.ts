@@ -15,3 +15,14 @@ export interface SalesOrder {
   taxSummary: { grandTotal: number }
   status: SalesOrderStatus
 }
+
+export interface CreateSalesOrderPayload {
+  customerId: string
+  orderDate: string
+  items: {
+    itemId: string
+    quantity: number
+    rate: number
+    discountPercent?: number
+  }[]
+}

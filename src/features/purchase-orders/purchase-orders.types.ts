@@ -16,3 +16,14 @@ export interface PurchaseOrder {
   taxSummary: { grandTotal: number }
   status: PurchaseOrderStatus
 }
+
+export interface CreatePurchaseOrderPayload {
+  supplierId: string
+  orderDate: string
+  items: {
+    itemId: string
+    quantity: number
+    rate: number
+    discountPercent?: number
+  }[]
+}

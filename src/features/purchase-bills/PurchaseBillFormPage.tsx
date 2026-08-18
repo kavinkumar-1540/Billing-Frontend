@@ -7,6 +7,7 @@ import { PartySelector } from '@/components/PartySelector'
 import { InvoiceItemTable } from '@/components/InvoiceItemTable'
 import { GSTBreakdown } from '@/components/GSTBreakdown'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { fetchParties } from '@/features/parties/parties.api'
@@ -92,27 +93,33 @@ export default function PurchaseBillFormPage() {
         }}
         className="space-y-6"
       >
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <PartySelector partyType="SUPPLIER" label="Supplier *" value={supplierId} onChange={setSupplierId} required />
-          <div className="space-y-1.5">
-            <Label htmlFor="billDate">Bill Date *</Label>
-            <Input
-              id="billDate"
-              type="date"
-              required
-              value={billDate}
-              onChange={(e) => setBillDate(e.target.value)}
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="supplierInvoiceNumber">Supplier Invoice #</Label>
-            <Input
-              id="supplierInvoiceNumber"
-              value={supplierInvoiceNumber}
-              onChange={(e) => setSupplierInvoiceNumber(e.target.value)}
-            />
-          </div>
-        </div>
+        <Card className="p-6">
+          <CardContent className="grid grid-cols-1 gap-4 p-0 sm:grid-cols-3">
+            <PartySelector partyType="SUPPLIER" label="Supplier *" value={supplierId} onChange={setSupplierId} required />
+            <div className="space-y-1.5">
+              <Label htmlFor="billDate" className="text-xs font-semibold text-slate-300">
+                Bill Date *
+              </Label>
+              <Input
+                id="billDate"
+                type="date"
+                required
+                value={billDate}
+                onChange={(e) => setBillDate(e.target.value)}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="supplierInvoiceNumber" className="text-xs font-semibold text-slate-300">
+                Supplier Invoice #
+              </Label>
+              <Input
+                id="supplierInvoiceNumber"
+                value={supplierInvoiceNumber}
+                onChange={(e) => setSupplierInvoiceNumber(e.target.value)}
+              />
+            </div>
+          </CardContent>
+        </Card>
 
         <InvoiceItemTable lines={lines} previews={preview.lines} onChange={setLines} />
 
@@ -120,7 +127,7 @@ export default function PurchaseBillFormPage() {
           <GSTBreakdown preview={preview} />
         </div>
 
-        <div className="sticky bottom-0 flex justify-end gap-2 border-t bg-background py-4">
+        <div className="sticky bottom-0 flex justify-end gap-2 border-t border-white/10 bg-slate-950/85 py-4 backdrop-blur-xl">
           <Button type="button" variant="outline" onClick={() => navigate('/purchases/bills')}>
             Cancel
           </Button>

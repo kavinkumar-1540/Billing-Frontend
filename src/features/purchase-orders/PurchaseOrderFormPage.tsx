@@ -12,28 +12,28 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { fetchParties } from '@/features/parties/parties.api'
 import { fetchItems, fetchTaxRates } from '@/features/items/items.api'
-import { issueSalesInvoice } from './sales-invoices.api'
-import { previewDocument, type DraftLine } from './gst-preview.util'
+import { createPurchaseOrder } from './purchase-orders.api'
+import { previewDocument, type DraftLine } from '@/features/sales-invoices/gst-preview.util'
 
 const COMPANY_STATE_CODE = '33' // Tamil Nadu — matches seeded demo company
 
-export default function SalesInvoiceFormPage() {
+export default function PurchaseOrderFormPage() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
-  const [customerId, setCustomerId] = useState('')
-  const [invoiceDate, setInvoiceDate] = useState(() => new Date().toISOString().slice(0, 10))
+  const [supplierId, setSupplierId] = useState('')
+  const [orderDate, setOrderDate] = useState(() => new Date().toISOString().slice(0, 10))
   const [lines, setLines] = useState<DraftLine[]>([{ itemId: '', quantity: 1, rate: 0 }])
 
-  const { data: allCustomers } = useQuery({
-    queryKey: ['parties', 'CUSTOMER', 'selector'],
-    queryFn: () => fetchParties('CUSTOMER', { limit: 200 }),
+  const { data: allSuppliers } = useQuery({
+    queryKey: ['parties', 'SUPPLIER', 'selector'],
+    queryFn: () => fetchParties('SUPPLIER', { limit: 200 }),
   })
   const { data: allItems } = useQuery({ queryKey: ['items', 'selector'], queryFn: () => fetchItems({ limit: 200 }) })
   const { data: taxRates } = useQuery({ queryKey: ['tax-rates'], queryFn: fetchTaxRates })
 
-  const selectedCustomer = allCustomers?.items.find((c) => c._id === customerId)
-  const isIntraState = (selectedCustomer?.stateCode ?? '') === COMPANY_STATE_CODE
+  const selectedSupplier = allSuppliers?.items.find((s) => s._id === supplierId)
+  const isIntraState = (selectedSupplier?.stateCode ?? '') === COMPANY_STATE_CODE
 
   const validLines = useMemo(() => lines.filter((l) => l.itemId && l.quantity > 0), [lines])
 
@@ -44,9 +44,9 @@ export default function SalesInvoiceFormPage() {
 
   const mutation = useMutation({
     mutationFn: () =>
-      issueSalesInvoice({
-        customerId,
-        invoiceDate,
+      createPurchaseOrder({
+        supplierId,
+        orderDate,
         items: validLines.map((l) => ({
           itemId: l.itemId,
           quantity: l.quantity,
@@ -54,31 +54,30 @@ export default function SalesInvoiceFormPage() {
           discountPercent: l.discountPercent,
         })),
       }),
-    onSuccess: (invoice) => {
-      toast.success(`Invoice ${invoice.invoiceNumber} issued`)
-      void queryClient.invalidateQueries({ queryKey: ['sales-invoices'] })
-      void queryClient.invalidateQueries({ queryKey: ['items'] })
-      void navigate('/sales/invoices')
+    onSuccess: (order) => {
+      toast.success(`Purchase quotation ${order.poNumber} created`)
+      void queryClient.invalidateQueries({ queryKey: ['purchase-orders'] })
+      void navigate('/purchases/orders')
     },
     onError: (error: unknown) => {
       const message =
         error && typeof error === 'object' && 'response' in error
           ? ((error as { response?: { data?: { message?: string } } }).response?.data?.message ??
-            'Failed to issue invoice')
-          : 'Failed to issue invoice'
+            'Failed to create purchase quotation')
+          : 'Failed to create purchase quotation'
       toast.error(Array.isArray(message) ? message.join(', ') : message)
     },
   })
 
-  const canSubmit = customerId && validLines.length > 0 && !mutation.isPending
+  const canSubmit = supplierId && validLines.length > 0 && !mutation.isPending
 
   return (
     <div>
       <PageHeader
-        title="New Sales Invoice"
-        description="Create a GST-compliant invoice for a customer"
+        title="New Purchase Quotation"
+        description="Create a quotation with a supplier, pending confirmation and billing"
         actions={
-          <Button variant="outline" size="sm" onClick={() => navigate('/sales/invoices')}>
+          <Button variant="outline" size="sm" onClick={() => navigate('/purchases/orders')}>
             Cancel
           </Button>
         }
@@ -93,22 +92,22 @@ export default function SalesInvoiceFormPage() {
       >
         <Card className="p-6">
           <CardContent className="grid grid-cols-1 gap-4 p-0 sm:grid-cols-3">
-            <PartySelector partyType="CUSTOMER" label="Customer *" value={customerId} onChange={setCustomerId} required />
+            <PartySelector partyType="SUPPLIER" label="Supplier *" value={supplierId} onChange={setSupplierId} required />
             <div className="space-y-1.5">
-              <Label htmlFor="invoiceDate" className="text-xs font-semibold text-slate-300">
-                Invoice Date *
+              <Label htmlFor="orderDate" className="text-xs font-semibold text-slate-300">
+                Quotation Date *
               </Label>
               <Input
-                id="invoiceDate"
+                id="orderDate"
                 type="date"
                 required
-                value={invoiceDate}
-                onChange={(e) => setInvoiceDate(e.target.value)}
+                value={orderDate}
+                onChange={(e) => setOrderDate(e.target.value)}
               />
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-slate-300">Place of Supply</Label>
-              <Input disabled value={selectedCustomer?.state ?? '—'} />
+              <Input disabled value={selectedSupplier?.state ?? '—'} />
             </div>
           </CardContent>
         </Card>
@@ -120,11 +119,11 @@ export default function SalesInvoiceFormPage() {
         </div>
 
         <div className="sticky bottom-0 flex justify-end gap-2 border-t border-white/10 bg-slate-950/85 py-4 backdrop-blur-xl">
-          <Button type="button" variant="outline" onClick={() => navigate('/sales/invoices')}>
+          <Button type="button" variant="outline" onClick={() => navigate('/purchases/orders')}>
             Cancel
           </Button>
           <Button type="submit" disabled={!canSubmit}>
-            {mutation.isPending ? 'Issuing…' : 'Issue Invoice'}
+            {mutation.isPending ? 'Creating…' : 'Create Quotation'}
           </Button>
         </div>
       </form>
