@@ -27,9 +27,9 @@ export default function CreditNoteFormPage() {
 
   const { data: invoices } = useQuery({
     queryKey: ['sales-invoices', 'for-credit-note'],
-    queryFn: () => fetchSalesInvoices({ limit: 200 }),
+    queryFn: () => fetchSalesInvoices({ limit: 100 }),
   })
-  const { data: allItems } = useQuery({ queryKey: ['items', 'selector'], queryFn: () => fetchItems({ limit: 200 }) })
+  const { data: allItems } = useQuery({ queryKey: ['items', 'selector'], queryFn: () => fetchItems({ limit: 100 }) })
   const { data: taxRates } = useQuery({ queryKey: ['tax-rates'], queryFn: fetchTaxRates })
 
   const selectedInvoice = invoices?.items.find((i) => i._id === originalInvoiceId)

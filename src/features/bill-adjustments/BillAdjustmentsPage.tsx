@@ -36,7 +36,7 @@ export default function BillAdjustmentsPage() {
   })
   const { data: bills } = useQuery({
     queryKey: ['purchase-bills', 'for-adjustment'],
-    queryFn: () => fetchPurchaseBills({ limit: 200 }),
+    queryFn: () => fetchPurchaseBills({ limit: 100 }),
   })
 
   const eligibleBills = useMemo(

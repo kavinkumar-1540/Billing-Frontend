@@ -13,7 +13,7 @@ interface PartySelectorProps {
 export function PartySelector({ partyType, value, onChange, label, required }: PartySelectorProps) {
   const { data } = useQuery({
     queryKey: ['parties', partyType, 'selector'],
-    queryFn: () => fetchParties(partyType, { limit: 200 }),
+    queryFn: () => fetchParties(partyType, { limit: 100 }),
   })
 
   return (

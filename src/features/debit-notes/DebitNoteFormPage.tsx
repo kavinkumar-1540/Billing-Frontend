@@ -27,9 +27,9 @@ export default function DebitNoteFormPage() {
 
   const { data: bills } = useQuery({
     queryKey: ['purchase-bills', 'for-debit-note'],
-    queryFn: () => fetchPurchaseBills({ limit: 200 }),
+    queryFn: () => fetchPurchaseBills({ limit: 100 }),
   })
-  const { data: allItems } = useQuery({ queryKey: ['items', 'selector'], queryFn: () => fetchItems({ limit: 200 }) })
+  const { data: allItems } = useQuery({ queryKey: ['items', 'selector'], queryFn: () => fetchItems({ limit: 100 }) })
   const { data: taxRates } = useQuery({ queryKey: ['tax-rates'], queryFn: fetchTaxRates })
 
   const selectedBill = bills?.items.find((b) => b._id === originalBillId)

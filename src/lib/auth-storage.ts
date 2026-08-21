@@ -3,7 +3,7 @@ export interface CompanyMembership {
   companyName: string
   companySlug: string
   roleName: string
-  permissions: string[]
+  roleKey: string
 }
 
 export interface AuthSession {
@@ -14,6 +14,8 @@ export interface AuthSession {
   name: string
   companies: CompanyMembership[]
   activeCompanyId?: string
+  /** Flat unique_key strings granted to the active company's role, resolved after login/company-switch. */
+  resolvedPermissionKeys?: string[]
 }
 
 const STORAGE_KEY = 'billing-suite.auth'

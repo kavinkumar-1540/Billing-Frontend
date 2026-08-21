@@ -10,37 +10,35 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { EmptyState } from '@/components/EmptyState'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetBody, SheetFooter } from '@/components/ui/sheet'
-import { fetchRoles, fetchPermissionCatalog, createRole, updateRole, deleteRole } from './roles-permissions.api'
+import { useAuth } from '@/features/auth/AuthContext'
+import {
+  fetchRoles,
+  fetchPermissionModules,
+  fetchRolePermissions,
+  savePermissions,
+  createRole,
+  deleteRole,
+} from './roles-permissions.api'
+import type { PermissionModuleNode } from './roles-permissions.types'
 
-interface CategoryRow {
-  category: string
-  actions: { key: string; action: string; description: string }[]
-}
-
-function groupByCategory(catalog: { key: string; description: string }[]): CategoryRow[] {
-  const map = new Map<string, CategoryRow>()
-  for (const { key, description } of catalog) {
-    const [category, action] = key.split(':')
-    if (!map.has(category)) map.set(category, { category, actions: [] })
-    map.get(category)!.actions.push({ key, action, description })
-  }
-  return Array.from(map.values())
-}
-
-function toTitleCase(value: string) {
-  return value[0].toUpperCase() + value.slice(1)
+function toRoleKey(name: string) {
+  return name
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
 }
 
 interface PermissionMatrixProps {
-  rows: CategoryRow[]
+  modules: PermissionModuleNode[]
   allActionLabels: string[]
   selected: Set<string>
   editable: boolean
-  onToggle: (key: string) => void
-  onToggleCategory: (keys: string[]) => void
+  onToggle: (id: string) => void
+  onToggleModule: (ids: string[]) => void
 }
 
-function PermissionMatrix({ rows, allActionLabels, selected, editable, onToggle, onToggleCategory }: PermissionMatrixProps) {
+function PermissionMatrix({ modules, allActionLabels, selected, editable, onToggle, onToggleModule }: PermissionMatrixProps) {
   return (
     <div className="glass-2 overflow-x-auto rounded-2xl">
       <table className="w-full text-xs">
@@ -48,7 +46,7 @@ function PermissionMatrix({ rows, allActionLabels, selected, editable, onToggle,
           <tr className="border-b border-white/10 bg-slate-900/50 text-left text-slate-400">
             <th className="px-3 py-2 font-semibold">Module</th>
             {allActionLabels.map((action) => (
-              <th key={action} className="px-3 py-2 text-center font-semibold capitalize">
+              <th key={action} className="px-3 py-2 text-center font-semibold">
                 {action}
               </th>
             ))}
@@ -56,23 +54,23 @@ function PermissionMatrix({ rows, allActionLabels, selected, editable, onToggle,
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => {
-            const rowKeys = row.actions.map((a) => a.key)
-            const allChecked = rowKeys.every((k) => selected.has(k))
+          {modules.map((mod) => {
+            const rowIds = mod.subModule.map((s) => s._id)
+            const allChecked = rowIds.length > 0 && rowIds.every((id) => selected.has(id))
             return (
-              <tr key={row.category} className="border-b border-white/5 last:border-0">
-                <td className="px-3 py-2 font-medium text-slate-200">{toTitleCase(row.category)}</td>
+              <tr key={mod._id} className="border-b border-white/5 last:border-0">
+                <td className="px-3 py-2 font-medium text-slate-200">{mod.moduleName}</td>
                 {allActionLabels.map((action) => {
-                  const match = row.actions.find((a) => a.action === action)
+                  const match = mod.subModule.find((s) => s.subModuleName === action)
                   if (!match) return <td key={action} className="px-3 py-2 text-center text-slate-500">—</td>
                   return (
-                    <td key={action} className="px-3 py-2 text-center" title={match.description}>
+                    <td key={action} className="px-3 py-2 text-center" title={match.unique_key}>
                       <input
                         type="checkbox"
-                        className="cursor-pointer accent-cyan-500 disabled:cursor-not-allowed disabled:opacity-60"
-                        checked={selected.has(match.key)}
+                        className="size-4 cursor-pointer accent-cyan-500 disabled:cursor-not-allowed disabled:accent-slate-500"
+                        checked={selected.has(match._id)}
                         disabled={!editable}
-                        onChange={() => onToggle(match.key)}
+                        onChange={() => onToggle(match._id)}
                       />
                     </td>
                   )
@@ -80,10 +78,10 @@ function PermissionMatrix({ rows, allActionLabels, selected, editable, onToggle,
                 <td className="px-3 py-2 text-center">
                   <input
                     type="checkbox"
-                    className="cursor-pointer accent-cyan-500 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="size-4 cursor-pointer accent-cyan-500 disabled:cursor-not-allowed disabled:accent-slate-500"
                     checked={allChecked}
                     disabled={!editable}
-                    onChange={() => onToggleCategory(rowKeys)}
+                    onChange={() => onToggleModule(rowIds)}
                   />
                 </td>
               </tr>
@@ -96,6 +94,8 @@ function PermissionMatrix({ rows, allActionLabels, selected, editable, onToggle,
 }
 
 export default function RolesSettingsPage() {
+  const { hasPermission, refreshPermissions, activeCompany } = useAuth()
+  const canManage = hasPermission('users:manage')
   const queryClient = useQueryClient()
   const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null)
   const [draftPermissions, setDraftPermissions] = useState<Set<string>>(new Set())
@@ -104,12 +104,11 @@ export default function RolesSettingsPage() {
   const [name, setName] = useState('')
 
   const { data: roles, isLoading } = useQuery({ queryKey: ['roles'], queryFn: fetchRoles })
-  const { data: catalog } = useQuery({ queryKey: ['permission-catalog'], queryFn: fetchPermissionCatalog })
-
-  const rows = useMemo(() => groupByCategory(catalog ?? []), [catalog])
+  const { data: modulesData } = useQuery({ queryKey: ['permission-modules'], queryFn: fetchPermissionModules })
+  const modules = useMemo(() => modulesData ?? [], [modulesData])
   const allActionLabels = useMemo(
-    () => Array.from(new Set(rows.flatMap((r) => r.actions.map((a) => a.action)))),
-    [rows],
+    () => Array.from(new Set(modules.flatMap((m) => m.subModule.map((s) => s.subModuleName)))),
+    [modules],
   )
 
   useEffect(() => {
@@ -120,15 +119,34 @@ export default function RolesSettingsPage() {
   }, [roles, selectedRoleId])
 
   const selectedRole = roles?.find((r) => r._id === selectedRoleId) ?? null
+  const isLockedRole = selectedRole?.roleKey === 'admin'
+
+  const { data: rolePermissions } = useQuery({
+    queryKey: ['role-permissions', selectedRole?.roleKey],
+    queryFn: () => fetchRolePermissions(selectedRole!.roleKey),
+    enabled: Boolean(selectedRole),
+  })
 
   useEffect(() => {
-    setDraftPermissions(new Set(selectedRole?.permissions ?? []))
-  }, [selectedRole])
+    setDraftPermissions(new Set((rolePermissions?.permissionsDetails ?? []).map((s) => s._id)))
+  }, [rolePermissions])
 
-  const invalidate = () => void queryClient.invalidateQueries({ queryKey: ['roles'] })
+  const grantedIds = useMemo(
+    () => new Set((rolePermissions?.permissionsDetails ?? []).map((s) => s._id)),
+    [rolePermissions],
+  )
+  const totalPermissionCount = useMemo(
+    () => modules.reduce((sum, m) => sum + m.subModule.length, 0),
+    [modules],
+  )
+
+  const invalidate = () => {
+    void queryClient.invalidateQueries({ queryKey: ['roles'] })
+    void queryClient.invalidateQueries({ queryKey: ['role-permissions'] })
+  }
 
   const createMutation = useMutation({
-    mutationFn: () => createRole({ name, permissions: [] }),
+    mutationFn: () => createRole({ name, roleKey: toRoleKey(name) }),
     onSuccess: (role) => {
       toast.success('Role created')
       invalidate()
@@ -146,10 +164,12 @@ export default function RolesSettingsPage() {
   })
 
   const saveMutation = useMutation({
-    mutationFn: () => updateRole(selectedRole!._id, { permissions: Array.from(draftPermissions) }),
+    mutationFn: () =>
+      savePermissions({ role_key: selectedRole!.roleKey, permissionId: Array.from(draftPermissions) }),
     onSuccess: () => {
       toast.success('Permissions updated')
       invalidate()
+      if (selectedRole?.roleKey === activeCompany?.roleKey) refreshPermissions()
     },
     onError: () => toast.error('Failed to save permissions'),
   })
@@ -170,28 +190,26 @@ export default function RolesSettingsPage() {
     },
   })
 
-  const togglePermission = (key: string) => {
+  const togglePermission = (id: string) => {
     setDraftPermissions((prev) => {
       const next = new Set(prev)
-      if (next.has(key)) next.delete(key)
-      else next.add(key)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
       return next
     })
   }
 
-  const toggleCategory = (keys: string[]) => {
+  const toggleModule = (ids: string[]) => {
     setDraftPermissions((prev) => {
-      const allChecked = keys.every((k) => prev.has(k))
+      const allChecked = ids.every((id) => prev.has(id))
       const next = new Set(prev)
-      keys.forEach((k) => (allChecked ? next.delete(k) : next.add(k)))
+      ids.forEach((id) => (allChecked ? next.delete(id) : next.add(id)))
       return next
     })
   }
 
   const isDirty =
-    selectedRole != null &&
-    (draftPermissions.size !== selectedRole.permissions.length ||
-      selectedRole.permissions.some((p) => !draftPermissions.has(p)))
+    draftPermissions.size !== grantedIds.size || Array.from(grantedIds).some((id) => !draftPermissions.has(id))
 
   return (
     <div>
@@ -199,10 +217,12 @@ export default function RolesSettingsPage() {
         title="Roles & Permissions"
         description="Select a role to view or edit which actions it can perform"
         actions={
-          <Button size="sm" className="gap-1.5" onClick={() => setOpen(true)}>
-            <Plus className="size-4" />
-            New Role
-          </Button>
+          canManage ? (
+            <Button size="sm" className="gap-1.5" onClick={() => setOpen(true)}>
+              <Plus className="size-4" />
+              New Role
+            </Button>
+          ) : undefined
         }
       />
 
@@ -231,7 +251,7 @@ export default function RolesSettingsPage() {
                   )}
                 </div>
                 <p className="text-xs text-slate-400">
-                  {role.permissions.length} of {catalog?.length ?? 0} permissions granted
+                  {role._id === selectedRoleId ? grantedIds.size : '—'} of {totalPermissionCount} permissions granted
                 </p>
               </button>
             ))}
@@ -244,27 +264,31 @@ export default function RolesSettingsPage() {
                   <div>
                     <h3 className="text-base font-semibold text-white">{selectedRole.name}</h3>
                     <p className="text-xs text-slate-400">
-                      {selectedRole.isSystemDefault
-                        ? 'System default role — permissions are fixed and cannot be edited.'
-                        : 'Custom role — check the permissions this role should have, then save.'}
+                      {isLockedRole
+                        ? 'The Admin role always has full access and cannot be edited.'
+                        : canManage
+                          ? 'Check the permissions this role should have, then save.'
+                          : "You don't have permission to edit roles."}
                     </p>
                   </div>
-                  {!selectedRole.isSystemDefault && (
+                  {!isLockedRole && canManage && (
                     <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="gap-1.5 text-rose-400 hover:bg-rose-500/10 hover:text-rose-300"
-                        disabled={deleteMutation.isPending}
-                        onClick={() => {
-                          if (window.confirm(`Delete role "${selectedRole.name}"?`)) {
-                            deleteMutation.mutate(selectedRole._id)
-                          }
-                        }}
-                      >
-                        <Trash2 className="size-3.5" />
-                        Delete
-                      </Button>
+                      {!selectedRole.isSystemDefault && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="gap-1.5 text-rose-400 hover:bg-rose-500/10 hover:text-rose-300"
+                          disabled={deleteMutation.isPending}
+                          onClick={() => {
+                            if (window.confirm(`Delete role "${selectedRole.name}"?`)) {
+                              deleteMutation.mutate(selectedRole._id)
+                            }
+                          }}
+                        >
+                          <Trash2 className="size-3.5" />
+                          Delete
+                        </Button>
+                      )}
                       <Button size="sm" disabled={!isDirty || saveMutation.isPending} onClick={() => saveMutation.mutate()}>
                         {saveMutation.isPending ? 'Saving…' : 'Save Permissions'}
                       </Button>
@@ -273,12 +297,12 @@ export default function RolesSettingsPage() {
                 </div>
 
                 <PermissionMatrix
-                  rows={rows}
+                  modules={modules}
                   allActionLabels={allActionLabels}
                   selected={draftPermissions}
-                  editable={!selectedRole.isSystemDefault}
+                  editable={!isLockedRole && canManage}
                   onToggle={togglePermission}
-                  onToggleCategory={toggleCategory}
+                  onToggleModule={toggleModule}
                 />
               </CardContent>
             </Card>

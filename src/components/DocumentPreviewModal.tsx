@@ -15,15 +15,25 @@ interface DocumentPreviewModalProps {
 export function DocumentPreviewModal({ docType, id, title, open, onOpenChange }: DocumentPreviewModalProps) {
   const [blobUrl, setBlobUrl] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!open) return
     let objectUrl: string | null = null
     setIsLoading(true)
+    setError(null)
     fetchDocumentPdfBlob(docType, id)
       .then((blob) => {
         objectUrl = URL.createObjectURL(blob)
         setBlobUrl(objectUrl)
+      })
+      .catch((err: unknown) => {
+        const message =
+          err && typeof err === 'object' && 'response' in err
+            ? ((err as { response?: { data?: { message?: string } } }).response?.data?.message ??
+              'Failed to load document.')
+            : 'Failed to load document.'
+        setError(Array.isArray(message) ? message.join(', ') : message)
       })
       .finally(() => setIsLoading(false))
 
@@ -79,7 +89,7 @@ export function DocumentPreviewModal({ docType, id, title, open, onOpenChange }:
           ) : blobUrl ? (
             <iframe src={blobUrl} title={title} className="h-full w-full rounded-xl border border-white/10 bg-white" />
           ) : (
-            <p className="text-sm text-slate-400">Failed to load document.</p>
+            <p className="text-sm text-slate-400">{error ?? 'Failed to load document.'}</p>
           )}
         </div>
       </DialogContent>

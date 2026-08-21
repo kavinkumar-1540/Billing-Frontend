@@ -27,9 +27,9 @@ export default function PurchaseOrderFormPage() {
 
   const { data: allSuppliers } = useQuery({
     queryKey: ['parties', 'SUPPLIER', 'selector'],
-    queryFn: () => fetchParties('SUPPLIER', { limit: 200 }),
+    queryFn: () => fetchParties('SUPPLIER', { limit: 100 }),
   })
-  const { data: allItems } = useQuery({ queryKey: ['items', 'selector'], queryFn: () => fetchItems({ limit: 200 }) })
+  const { data: allItems } = useQuery({ queryKey: ['items', 'selector'], queryFn: () => fetchItems({ limit: 100 }) })
   const { data: taxRates } = useQuery({ queryKey: ['tax-rates'], queryFn: fetchTaxRates })
 
   const selectedSupplier = allSuppliers?.items.find((s) => s._id === supplierId)

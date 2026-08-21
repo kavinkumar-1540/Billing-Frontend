@@ -9,7 +9,7 @@ interface ItemSelectorProps {
 export function ItemSelector({ value, onChange }: ItemSelectorProps) {
   const { data } = useQuery({
     queryKey: ['items', 'selector'],
-    queryFn: () => fetchItems({ limit: 200 }),
+    queryFn: () => fetchItems({ limit: 100 }),
   })
 
   return (

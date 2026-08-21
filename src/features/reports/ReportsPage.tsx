@@ -456,11 +456,11 @@ function LedgersSection() {
   const [partyId, setPartyId] = useState('')
   const { data: customers } = useQuery({
     queryKey: ['parties', 'CUSTOMER', 'ledger-selector'],
-    queryFn: () => fetchParties('CUSTOMER', { limit: 200 }),
+    queryFn: () => fetchParties('CUSTOMER', { limit: 100 }),
   })
   const { data: suppliers } = useQuery({
     queryKey: ['parties', 'SUPPLIER', 'ledger-selector'],
-    queryFn: () => fetchParties('SUPPLIER', { limit: 200 }),
+    queryFn: () => fetchParties('SUPPLIER', { limit: 100 }),
   })
   const { data: entries, isLoading } = useQuery({
     queryKey: ['reports', 'ledger', partyId],

@@ -27,9 +27,9 @@ export default function SalesOrderFormPage() {
 
   const { data: allCustomers } = useQuery({
     queryKey: ['parties', 'CUSTOMER', 'selector'],
-    queryFn: () => fetchParties('CUSTOMER', { limit: 200 }),
+    queryFn: () => fetchParties('CUSTOMER', { limit: 100 }),
   })
-  const { data: allItems } = useQuery({ queryKey: ['items', 'selector'], queryFn: () => fetchItems({ limit: 200 }) })
+  const { data: allItems } = useQuery({ queryKey: ['items', 'selector'], queryFn: () => fetchItems({ limit: 100 }) })
   const { data: taxRates } = useQuery({ queryKey: ['tax-rates'], queryFn: fetchTaxRates })
 
   const selectedCustomer = allCustomers?.items.find((c) => c._id === customerId)

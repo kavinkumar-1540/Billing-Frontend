@@ -34,7 +34,8 @@ function initials(name: string) {
 }
 
 export default function UsersSettingsPage() {
-  const { session } = useAuth()
+  const { session, hasPermission } = useAuth()
+  const canManage = hasPermission('users:manage')
   const queryClient = useQueryClient()
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -150,10 +151,10 @@ export default function UsersSettingsPage() {
       header: 'Role',
       render: (u) => (
         <select
-          className="glass-input flex h-8 cursor-pointer rounded-lg px-2 text-xs font-medium"
+          className="glass-input flex h-8 cursor-pointer rounded-lg px-2 text-xs font-medium disabled:cursor-not-allowed disabled:opacity-60"
           value={u.roleId}
           onChange={(e) => roleMutation.mutate({ companyMemberId: u.companyMemberId, roleId: e.target.value })}
-          disabled={roleMutation.isPending}
+          disabled={!canManage || roleMutation.isPending}
         >
           {roles?.map((r) => (
             <option key={r._id} value={r._id}>
@@ -179,6 +180,7 @@ export default function UsersSettingsPage() {
       align: 'right',
       render: (u) => {
         const isSelf = u.userId === session?.userId
+        if (!canManage) return null
         return (
           <div className="flex justify-end gap-1.5">
             <Button
@@ -228,10 +230,12 @@ export default function UsersSettingsPage() {
         title="Users"
         description="Manage who can access this company and what role they have"
         actions={
-          <Button size="sm" className="gap-1.5" onClick={() => setOpen(true)}>
-            <Plus className="size-4" />
-            Add User
-          </Button>
+          canManage ? (
+            <Button size="sm" className="gap-1.5" onClick={() => setOpen(true)}>
+              <Plus className="size-4" />
+              Add User
+            </Button>
+          ) : undefined
         }
       />
 

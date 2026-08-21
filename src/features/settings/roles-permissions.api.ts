@@ -1,8 +1,10 @@
 import { apiClient } from '@/lib/api-client'
 import type {
+  CreatePermissionPayload,
   CreateRolePayload,
-  PermissionCatalogItem,
+  PermissionModuleNode,
   Role,
+  RolePermissionsDetail,
   UpdateRolePayload,
 } from './roles-permissions.types'
 
@@ -11,9 +13,18 @@ export async function fetchRoles(): Promise<Role[]> {
   return data
 }
 
-export async function fetchPermissionCatalog(): Promise<PermissionCatalogItem[]> {
-  const { data } = await apiClient.get<PermissionCatalogItem[]>('/roles/permissions/catalog')
+export async function fetchPermissionModules(): Promise<PermissionModuleNode[]> {
+  const { data } = await apiClient.get<PermissionModuleNode[]>('/permissions/modules')
   return data
+}
+
+export async function fetchRolePermissions(roleKey: string): Promise<RolePermissionsDetail> {
+  const { data } = await apiClient.get<RolePermissionsDetail>(`/permissions/by-role/${roleKey}`)
+  return data
+}
+
+export async function savePermissions(payload: CreatePermissionPayload): Promise<void> {
+  await apiClient.post('/permissions', [payload])
 }
 
 export async function createRole(payload: CreateRolePayload): Promise<Role> {
