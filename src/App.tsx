@@ -34,6 +34,8 @@ import CompanySettingsPage from '@/features/settings/CompanySettingsPage'
 import UsersSettingsPage from '@/features/settings/UsersSettingsPage'
 import RolesSettingsPage from '@/features/settings/RolesSettingsPage'
 import ReportsPage from '@/features/reports/ReportsPage'
+import CompaniesPage from '@/features/companies/CompaniesPage'
+import PlatformUsersPage from '@/features/platform-users/PlatformUsersPage'
 import { ModulePlaceholderPage } from '@/components/ModulePlaceholderPage'
 import { NAV } from '@/layouts/nav-config'
 
@@ -98,6 +100,8 @@ function App() {
                 }
               >
                 <Route path="/" element={<DashboardPage />} />
+                <Route path="/companies" element={<CompaniesPage />} />
+                <Route path="/platform-users" element={<PlatformUsersPage />} />
                 <Route path="/sales/orders/new" element={<SalesOrderFormPage />} />
                 <Route path="/sales/invoices/new" element={<SalesInvoiceFormPage />} />
                 <Route path="/sales/invoices/:id" element={<SalesInvoiceDetailPage />} />

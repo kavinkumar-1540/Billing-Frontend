@@ -39,6 +39,7 @@ const DEMO_LOGINS = [
   { email: 'kavin@demotraders.example', name: 'Billing Manager', subtitle: 'Sales & Invoicing', initials: 'KK', tone: 'blue' as const },
   { email: 'inventory@stbilling.local', name: 'Inventory Exec', subtitle: 'Stock & Items', initials: 'PS', tone: 'emerald' as const },
   { email: 'sundar.accounts@demotraders.example', name: 'Auditor', subtitle: 'Read-Only Financials', initials: 'SR', tone: 'purple' as const },
+  { email: 'superadmin@businesssuite.local', name: 'Super Admin', subtitle: 'Platform / Create Companies', initials: 'SA', tone: 'amber' as const },
 ]
 
 const DEMO_LOGIN_TONE: Record<(typeof DEMO_LOGINS)[number]['tone'], string> = {
@@ -46,6 +47,7 @@ const DEMO_LOGIN_TONE: Record<(typeof DEMO_LOGINS)[number]['tone'], string> = {
   blue: 'bg-blue-500/20 text-blue-300 border-blue-500/30 group-hover:text-blue-200 hover:border-blue-500/30',
   emerald: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30 group-hover:text-emerald-200 hover:border-emerald-500/30',
   purple: 'bg-purple-500/20 text-purple-300 border-purple-500/30 group-hover:text-purple-200 hover:border-purple-500/30',
+  amber: 'bg-amber-500/20 text-amber-300 border-amber-500/30 group-hover:text-amber-200 hover:border-amber-500/30',
 }
 
 const DEMO_PASSWORD = 'ChangeMe@123'
@@ -232,7 +234,7 @@ export default function LoginPage() {
                   type="button"
                   onClick={() => handleDemoLogin(demo.email)}
                   disabled={mutation.isPending}
-                  className={`group flex items-center gap-2 rounded-xl border border-white/10 bg-slate-950/60 p-2 text-left transition-colors disabled:opacity-50 ${DEMO_LOGIN_TONE[demo.tone]}`}
+                  className={`group flex items-center gap-2 rounded-xl border border-white/10 bg-slate-950/60 p-2 text-left transition-colors disabled:opacity-50 ${demo.tone === 'amber' ? 'col-span-2' : ''} ${DEMO_LOGIN_TONE[demo.tone]}`}
                 >
                   <div
                     className={`flex size-6 shrink-0 items-center justify-center rounded-lg border text-[10px] font-bold ${DEMO_LOGIN_TONE[demo.tone]}`}

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Search, Plus, ArrowRight } from 'lucide-react'
+import { Search, Plus, ArrowRight, X } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
@@ -88,7 +88,10 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="glass-3 top-24 max-w-2xl translate-y-0 gap-0 overflow-hidden rounded-2xl border-white/20 p-0">
+      <DialogContent
+        showClose={false}
+        className="glass-3 top-24 max-w-2xl translate-y-0 gap-0 overflow-hidden rounded-2xl border-white/20 p-0"
+      >
         <div className="flex items-center gap-3 border-b border-white/10 bg-slate-900/60 px-4">
           <Search className="size-4 shrink-0 text-cyan-400" />
           <Input
@@ -99,6 +102,12 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
             placeholder="Type a screen, action, or command (e.g. Sales Invoice, Customers)…"
             className="border-none bg-transparent py-4 shadow-none focus-visible:ring-0"
           />
+          <button
+            onClick={() => onOpenChange(false)}
+            className="shrink-0 rounded-lg p-1 text-slate-400 hover:bg-white/10 hover:text-white"
+          >
+            <X className="size-4" />
+          </button>
         </div>
 
         <div className="max-h-96 space-y-1 overflow-y-auto p-2">

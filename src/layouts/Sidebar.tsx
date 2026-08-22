@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { useNavigate, NavLink } from 'react-router-dom'
-import { ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight, X, Building2, Users2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { STLogo } from '@/components/STLogo'
+import { useAuth } from '@/features/auth/AuthContext'
 import { NAV } from './nav-config'
 
 interface SidebarProps {
@@ -13,6 +14,7 @@ interface SidebarProps {
 export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false)
   const navigate = useNavigate()
+  const { hasPermission } = useAuth()
 
   return (
     <>
@@ -109,6 +111,80 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
               </div>
             </div>
           ))}
+
+          {(hasPermission('add_company') || hasPermission('manage_platform_users')) && (
+            <div>
+              {!collapsed && (
+                <div className="mb-1 px-3 pt-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                  Platform
+                </div>
+              )}
+              <div className="space-y-1">
+                {hasPermission('add_company') && (
+                  <div className="group relative flex items-center">
+                    <NavLink
+                      to="/companies"
+                      onClick={onMobileClose}
+                      className={({ isActive }) =>
+                        cn(
+                          'flex w-full items-center gap-3 rounded-xl px-3 py-2 text-xs font-medium transition-all duration-200',
+                          isActive
+                            ? 'border border-cyan-500/40 bg-gradient-to-r from-cyan-500/20 to-blue-500/10 text-cyan-200 shadow-[0_0_20px_rgba(6,182,212,0.2)]'
+                            : 'border border-transparent text-slate-400 hover:bg-white/5 hover:text-slate-100',
+                        )
+                      }
+                    >
+                      {({ isActive }) => (
+                        <>
+                          <Building2 className="size-4 shrink-0" />
+                          {!collapsed && <span className="flex-1 truncate">Companies</span>}
+                          {!collapsed && isActive && (
+                            <span className="size-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]" />
+                          )}
+                        </>
+                      )}
+                    </NavLink>
+                    {collapsed && (
+                      <div className="pointer-events-none absolute left-full ml-3 whitespace-nowrap rounded-md border border-white/10 bg-slate-900 px-2.5 py-1 text-xs text-slate-200 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 z-50">
+                        Companies
+                      </div>
+                    )}
+                  </div>
+                )}
+                {hasPermission('manage_platform_users') && (
+                  <div className="group relative flex items-center">
+                    <NavLink
+                      to="/platform-users"
+                      onClick={onMobileClose}
+                      className={({ isActive }) =>
+                        cn(
+                          'flex w-full items-center gap-3 rounded-xl px-3 py-2 text-xs font-medium transition-all duration-200',
+                          isActive
+                            ? 'border border-cyan-500/40 bg-gradient-to-r from-cyan-500/20 to-blue-500/10 text-cyan-200 shadow-[0_0_20px_rgba(6,182,212,0.2)]'
+                            : 'border border-transparent text-slate-400 hover:bg-white/5 hover:text-slate-100',
+                        )
+                      }
+                    >
+                      {({ isActive }) => (
+                        <>
+                          <Users2 className="size-4 shrink-0" />
+                          {!collapsed && <span className="flex-1 truncate">Platform Users</span>}
+                          {!collapsed && isActive && (
+                            <span className="size-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]" />
+                          )}
+                        </>
+                      )}
+                    </NavLink>
+                    {collapsed && (
+                      <div className="pointer-events-none absolute left-full ml-3 whitespace-nowrap rounded-md border border-white/10 bg-slate-900 px-2.5 py-1 text-xs text-slate-200 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 z-50">
+                        Platform Users
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </nav>
 
         <button
