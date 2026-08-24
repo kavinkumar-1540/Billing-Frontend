@@ -147,7 +147,20 @@ export default function CompanySettingsPage() {
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="logoUrl">Logo URL</Label>
-                  <Input id="logoUrl" value={form.logoUrl ?? ''} onChange={(e) => setField('logoUrl', e.target.value)} />
+                  <div className="flex items-center gap-3">
+                    {form.logoUrl && (
+                      <img
+                        src={form.logoUrl}
+                        alt="Company logo"
+                        className="h-10 w-10 shrink-0 rounded-lg object-cover"
+                      />
+                    )}
+                    <Input
+                      id="logoUrl"
+                      value={form.logoUrl ?? ''}
+                      onChange={(e) => setField('logoUrl', e.target.value)}
+                    />
+                  </div>
                 </div>
               </CardContent>
             </Card>

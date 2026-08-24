@@ -35,25 +35,21 @@ const HIGHLIGHTS = [
 ]
 
 const DEMO_LOGINS = [
-  { email: 'admin@businesssuite.local', name: 'Administrator', subtitle: 'Full Access', initials: 'AU', tone: 'cyan' as const },
-  { email: 'kavin@demotraders.example', name: 'Billing Manager', subtitle: 'Sales & Invoicing', initials: 'KK', tone: 'blue' as const },
-  { email: 'inventory@stbilling.local', name: 'Inventory Exec', subtitle: 'Stock & Items', initials: 'PS', tone: 'emerald' as const },
-  { email: 'sundar.accounts@demotraders.example', name: 'Auditor', subtitle: 'Read-Only Financials', initials: 'SR', tone: 'purple' as const },
-  { email: 'superadmin@businesssuite.local', name: 'Super Admin', subtitle: 'Platform / Create Companies', initials: 'SA', tone: 'amber' as const },
+  { email: 'admin@zentra.local', name: 'Administrator', subtitle: 'Full Access', initials: 'AU', tone: 'cyan' as const },
+  { email: 'staff@zentra.local', name: 'Staff', subtitle: 'Day-to-day Operations', initials: 'SU', tone: 'blue' as const },
+  { email: 'superadmin@zentra.local', name: 'Super Admin', subtitle: 'Platform / Create Companies', initials: 'SA', tone: 'amber' as const },
 ]
 
 const DEMO_LOGIN_TONE: Record<(typeof DEMO_LOGINS)[number]['tone'], string> = {
   cyan: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30 group-hover:text-cyan-200 hover:border-cyan-500/30',
   blue: 'bg-blue-500/20 text-blue-300 border-blue-500/30 group-hover:text-blue-200 hover:border-blue-500/30',
-  emerald: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30 group-hover:text-emerald-200 hover:border-emerald-500/30',
-  purple: 'bg-purple-500/20 text-purple-300 border-purple-500/30 group-hover:text-purple-200 hover:border-purple-500/30',
   amber: 'bg-amber-500/20 text-amber-300 border-amber-500/30 group-hover:text-amber-200 hover:border-amber-500/30',
 }
 
 const DEMO_PASSWORD = 'ChangeMe@123'
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('admin@businesssuite.local')
+  const [email, setEmail] = useState('admin@zentra.local')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(true)
@@ -157,7 +153,7 @@ export default function LoginPage() {
                   type="email"
                   required
                   autoComplete="email"
-                  placeholder="admin@businesssuite.local"
+                  placeholder="admin@zentra.local"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />

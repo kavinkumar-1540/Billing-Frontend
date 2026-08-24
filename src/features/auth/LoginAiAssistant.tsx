@@ -29,7 +29,7 @@ export function LoginAiAssistant() {
         setResponse(CANNED_ANSWERS.debit)
       } else {
         setResponse(
-          `ST Billing Smart AI: Verified! Your query regarding "${text}" is fully compliant with GST Rule 46. You can create invoices, manage stock, and export GSTR-1 reports with 1-click.`,
+          `ZENTRA Smart AI: Verified! Your query regarding "${text}" is fully compliant with GST Rule 46. You can create invoices, manage stock, and export GSTR-1 reports with 1-click.`,
         )
       }
       setIsTyping(false)
@@ -42,7 +42,7 @@ export function LoginAiAssistant() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-xs text-cyan-400">✦</span>
-          <span className="text-xs font-bold tracking-wide text-white">ST Billing AI Assistant</span>
+          <span className="text-xs font-bold tracking-wide text-white">ZENTRA AI Assistant</span>
           <span className="rounded border border-cyan-400/30 bg-cyan-500/20 px-1.5 py-0.5 text-[9px] font-bold uppercase text-cyan-300">
             BETA
           </span>
