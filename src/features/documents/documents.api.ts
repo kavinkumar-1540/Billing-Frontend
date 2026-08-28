@@ -14,3 +14,7 @@ export async function fetchDocumentPdfBlob(docType: PdfDocumentType, id: string)
   })
   return response.data as Blob
 }
+
+export async function emailDocument(docType: PdfDocumentType, id: string, toEmail?: string): Promise<void> {
+  await apiClient.post(`/documents/${docType}/${id}/email`, toEmail ? { toEmail } : {})
+}

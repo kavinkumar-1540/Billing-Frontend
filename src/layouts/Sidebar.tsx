@@ -17,6 +17,16 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
   const navigate = useNavigate()
   const { hasPermission } = useAuth()
 
+  const visibleNav = NAV.map((group) => ({
+    ...group,
+    sections: group.sections
+      .map((section) => ({
+        ...section,
+        items: section.items.filter((item) => !item.permission || hasPermission(item.permission)),
+      }))
+      .filter((section) => section.items.length > 0),
+  })).filter((group) => group.sections.length > 0)
+
   return (
     <>
       {mobileOpen && (
@@ -53,7 +63,7 @@ export function Sidebar({ mobileOpen = false, onMobileClose }: SidebarProps) {
         </div>
 
         <nav className="flex-1 space-y-4 overflow-y-auto px-3 py-3">
-          {NAV.map((group) => (
+          {visibleNav.map((group) => (
             <div key={group.label || 'root'}>
               {group.label && !collapsed && (
                 <div className="mb-1 px-3 pt-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">

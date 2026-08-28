@@ -6,7 +6,9 @@ import { ThemeProvider } from '@/components/theme-provider'
 import { AuthProvider } from '@/features/auth/AuthContext'
 import { ProtectedRoute } from '@/features/auth/ProtectedRoute'
 import { PublicOnlyRoute } from '@/features/auth/PublicOnlyRoute'
+import { RequirePermission } from '@/features/auth/RequirePermission'
 import LoginPage from '@/features/auth/LoginPage'
+import ResetPasswordPage from '@/features/auth/ResetPasswordPage'
 import { AppShell } from '@/layouts/AppShell'
 import DashboardPage from '@/features/dashboard/DashboardPage'
 import CustomersPage from '@/features/customers/CustomersPage'
@@ -48,26 +50,36 @@ const queryClient = new QueryClient({
   },
 })
 
-const BUILT_ROUTES: Record<string, ComponentType> = {
-  '/parties/customers': CustomersPage,
-  '/parties/suppliers': SuppliersPage,
-  '/inventory/items': ItemsPage,
-  '/inventory/adjustments': StockAdjustmentsPage,
-  '/sales/orders': SalesOrdersPage,
-  '/sales/invoices': SalesInvoicesPage,
-  '/purchases/orders': PurchaseOrdersPage,
-  '/purchases/bills': PurchaseBillsPage,
-  '/payments/receipts': CustomerReceiptsPage,
-  '/payments/supplier-payments': SupplierPaymentsPage,
-  '/sales/credit-notes': CreditNotesPage,
-  '/purchases/debit-notes': DebitNotesPage,
-  '/purchases/bill-adjustments': BillAdjustmentsPage,
-  '/settings/tax': TaxSettingsPage,
-  '/settings/company': CompanySettingsPage,
-  '/settings/users': UsersSettingsPage,
-  '/settings/roles': RolesSettingsPage,
-  '/reports': ReportsPage,
+const BUILT_ROUTES: Record<string, { component: ComponentType; permission: string }> = {
+  '/parties/customers': { component: CustomersPage, permission: 'parties:manage' },
+  '/parties/suppliers': { component: SuppliersPage, permission: 'parties:manage' },
+  '/inventory/items': { component: ItemsPage, permission: 'inventory:view' },
+  '/inventory/adjustments': { component: StockAdjustmentsPage, permission: 'inventory:view' },
+  '/sales/orders': { component: SalesOrdersPage, permission: 'sales:view' },
+  '/sales/invoices': { component: SalesInvoicesPage, permission: 'sales:view' },
+  '/purchases/orders': { component: PurchaseOrdersPage, permission: 'purchase:view' },
+  '/purchases/bills': { component: PurchaseBillsPage, permission: 'purchase:view' },
+  '/payments/receipts': { component: CustomerReceiptsPage, permission: 'payments:view' },
+  '/payments/supplier-payments': { component: SupplierPaymentsPage, permission: 'payments:view' },
+  '/sales/credit-notes': { component: CreditNotesPage, permission: 'sales:view' },
+  '/purchases/debit-notes': { component: DebitNotesPage, permission: 'purchase:view' },
+  '/purchases/bill-adjustments': { component: BillAdjustmentsPage, permission: 'purchase:view' },
+  '/settings/tax': { component: TaxSettingsPage, permission: 'settings:manage' },
+  '/settings/company': { component: CompanySettingsPage, permission: 'settings:manage' },
+  '/settings/users': { component: UsersSettingsPage, permission: 'users:manage' },
+  '/settings/roles': { component: RolesSettingsPage, permission: 'users:manage' },
+  '/reports': { component: ReportsPage, permission: 'reports:view' },
 }
+
+const FORM_ROUTES: { path: string; component: ComponentType; permission: string }[] = [
+  { path: '/sales/orders/new', component: SalesOrderFormPage, permission: 'sales:create' },
+  { path: '/sales/invoices/new', component: SalesInvoiceFormPage, permission: 'sales:create' },
+  { path: '/sales/invoices/:id', component: SalesInvoiceDetailPage, permission: 'sales:view' },
+  { path: '/purchases/orders/new', component: PurchaseOrderFormPage, permission: 'purchase:create' },
+  { path: '/purchases/bills/new', component: PurchaseBillFormPage, permission: 'purchase:create' },
+  { path: '/sales/credit-notes/new', component: CreditNoteFormPage, permission: 'sales:create' },
+  { path: '/purchases/debit-notes/new', component: DebitNoteFormPage, permission: 'purchase:create' },
+]
 
 const placeholderRoutes = NAV.flatMap((group) =>
   group.sections.flatMap((section) =>
@@ -93,6 +105,14 @@ function App() {
                 }
               />
               <Route
+                path="/reset-password"
+                element={
+                  <PublicOnlyRoute>
+                    <ResetPasswordPage />
+                  </PublicOnlyRoute>
+                }
+              />
+              <Route
                 element={
                   <ProtectedRoute>
                     <AppShell />
@@ -102,15 +122,27 @@ function App() {
                 <Route path="/" element={<DashboardPage />} />
                 <Route path="/companies" element={<CompaniesPage />} />
                 <Route path="/platform-users" element={<PlatformUsersPage />} />
-                <Route path="/sales/orders/new" element={<SalesOrderFormPage />} />
-                <Route path="/sales/invoices/new" element={<SalesInvoiceFormPage />} />
-                <Route path="/sales/invoices/:id" element={<SalesInvoiceDetailPage />} />
-                <Route path="/purchases/orders/new" element={<PurchaseOrderFormPage />} />
-                <Route path="/purchases/bills/new" element={<PurchaseBillFormPage />} />
-                <Route path="/sales/credit-notes/new" element={<CreditNoteFormPage />} />
-                <Route path="/purchases/debit-notes/new" element={<DebitNoteFormPage />} />
-                {Object.entries(BUILT_ROUTES).map(([path, Component]) => (
-                  <Route key={path} path={path} element={<Component />} />
+                {FORM_ROUTES.map(({ path, component: Component, permission }) => (
+                  <Route
+                    key={path}
+                    path={path}
+                    element={
+                      <RequirePermission permission={permission}>
+                        <Component />
+                      </RequirePermission>
+                    }
+                  />
+                ))}
+                {Object.entries(BUILT_ROUTES).map(([path, { component: Component, permission }]) => (
+                  <Route
+                    key={path}
+                    path={path}
+                    element={
+                      <RequirePermission permission={permission}>
+                        <Component />
+                      </RequirePermission>
+                    }
+                  />
                 ))}
                 {placeholderRoutes.map((item) => (
                   <Route

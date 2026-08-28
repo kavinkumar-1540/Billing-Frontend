@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { STLogo } from '@/components/STLogo'
-import { login } from './auth.api'
+import { login, forgotPassword } from './auth.api'
 import { useAuth } from './AuthContext'
 import { LoginHeroBackground } from './LoginHeroBackground'
 import { AmbientBackground } from '@/components/AmbientBackground'
@@ -72,6 +72,11 @@ export default function LoginPage() {
   function handleDemoLogin(demoEmail: string) {
     mutation.mutate({ email: demoEmail, password: DEMO_PASSWORD })
   }
+
+  const forgotPasswordMutation = useMutation({
+    mutationFn: (targetEmail: string) => forgotPassword(targetEmail),
+    onSuccess: () => setResetSent(true),
+  })
 
   return (
     <div className="relative flex min-h-svh w-full items-center justify-center overflow-hidden bg-[#070b14] p-4 sm:p-6 lg:p-12">
@@ -285,8 +290,13 @@ export default function LoginPage() {
                 Close
               </Button>
               {!resetSent && (
-                <Button type="button" size="sm" onClick={() => setResetSent(true)}>
-                  Send Reset Link
+                <Button
+                  type="button"
+                  size="sm"
+                  disabled={forgotPasswordMutation.isPending}
+                  onClick={() => forgotPasswordMutation.mutate(forgotEmail || email)}
+                >
+                  {forgotPasswordMutation.isPending ? 'Sending...' : 'Send Reset Link'}
                 </Button>
               )}
             </div>

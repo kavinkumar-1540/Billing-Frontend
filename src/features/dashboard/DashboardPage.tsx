@@ -24,12 +24,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { DataTable, type DataTableColumn } from '@/components/DataTable'
 import { StatusBadge } from '@/components/StatusBadge'
 import { MoneyDisplay } from '@/components/MoneyDisplay'
+import { DateRangeFilter } from '@/components/DateRangeFilter'
 import { fetchParties } from '@/features/parties/parties.api'
 import { fetchSalesInvoices } from '@/features/sales-invoices/sales-invoices.api'
 import type { SalesInvoice } from '@/features/sales-invoices/sales-invoices.types'
 import { SalesPurchasesTrendChart } from './SalesPurchasesTrendChart'
 
-const DATE_FILTERS = ['Today', 'This Week', 'This Month', 'This Quarter', 'This Year'] as const
+const DATE_FILTERS = ['This Month', 'This Year', 'Date Range'] as const
 
 const QUICK_ACTIONS = [
   { label: 'New Sales Invoice', icon: FileText, to: '/sales/invoices/new', tone: 'cyan' as const },
@@ -88,6 +89,8 @@ const invoiceColumns: DataTableColumn<SalesInvoice>[] = [
 
 export default function DashboardPage() {
   const [timeRange, setTimeRange] = useState<(typeof DATE_FILTERS)[number]>('This Month')
+  const [customFrom, setCustomFrom] = useState('')
+  const [customTo, setCustomTo] = useState('')
   const navigate = useNavigate()
 
   const { data: customers } = useQuery({
@@ -121,6 +124,10 @@ export default function DashboardPage() {
           ))}
         </div>
       </div>
+
+      {timeRange === 'Date Range' && (
+        <DateRangeFilter from={customFrom} to={customTo} onFromChange={setCustomFrom} onToChange={setCustomTo} />
+      )}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6">
         <StatTile label="Total Sales (MTD)" value="₹5,90,000" icon={IndianRupee} tone="cyan" delta={{ value: '12.4% vs last month', direction: 'up' }} />

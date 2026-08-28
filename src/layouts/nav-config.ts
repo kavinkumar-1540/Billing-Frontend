@@ -29,6 +29,8 @@ export interface NavLeaf {
   label: string
   to: string
   icon?: LucideIcon
+  /** Permission key required to see/access this item. Omit for always-visible items (e.g. Dashboard). */
+  permission?: string
 }
 
 export interface NavSection {
@@ -56,9 +58,9 @@ export const NAV: NavGroup[] = [
         label: 'Sales',
         icon: ShoppingCart,
         items: [
-          { label: 'Sales Quotation', to: '/sales/orders', icon: FileSpreadsheet },
-          { label: 'Sales Invoice', to: '/sales/invoices', icon: FileText },
-          { label: 'Credit Notes', to: '/sales/credit-notes', icon: Undo2 },
+          { label: 'Sales Quotation', to: '/sales/orders', icon: FileSpreadsheet, permission: 'sales:view' },
+          { label: 'Sales Invoice', to: '/sales/invoices', icon: FileText, permission: 'sales:view' },
+          { label: 'Credit Notes', to: '/sales/credit-notes', icon: Undo2, permission: 'sales:view' },
         ],
       },
     ],
@@ -70,10 +72,15 @@ export const NAV: NavGroup[] = [
         label: 'Purchases',
         icon: Truck,
         items: [
-          { label: 'Purchase Quotation', to: '/purchases/orders', icon: FileCheck2 },
-          { label: 'Purchase Invoice', to: '/purchases/bills', icon: Receipt },
-          { label: 'Debit Notes', to: '/purchases/debit-notes', icon: FileMinus2 },
-          { label: 'Bill Adjustment', to: '/purchases/bill-adjustments', icon: SlidersHorizontal },
+          { label: 'Purchase Quotation', to: '/purchases/orders', icon: FileCheck2, permission: 'purchase:view' },
+          { label: 'Purchase Invoice', to: '/purchases/bills', icon: Receipt, permission: 'purchase:view' },
+          { label: 'Debit Notes', to: '/purchases/debit-notes', icon: FileMinus2, permission: 'purchase:view' },
+          {
+            label: 'Bill Adjustment',
+            to: '/purchases/bill-adjustments',
+            icon: SlidersHorizontal,
+            permission: 'purchase:view',
+          },
         ],
       },
     ],
@@ -85,8 +92,13 @@ export const NAV: NavGroup[] = [
         label: 'Payments',
         icon: Wallet,
         items: [
-          { label: 'Customer Receipts', to: '/payments/receipts', icon: ArrowDownLeft },
-          { label: 'Supplier Payments', to: '/payments/supplier-payments', icon: ArrowUpRight },
+          { label: 'Customer Receipts', to: '/payments/receipts', icon: ArrowDownLeft, permission: 'payments:view' },
+          {
+            label: 'Supplier Payments',
+            to: '/payments/supplier-payments',
+            icon: ArrowUpRight,
+            permission: 'payments:view',
+          },
         ],
       },
     ],
@@ -98,8 +110,8 @@ export const NAV: NavGroup[] = [
         label: 'Inventory',
         icon: Boxes,
         items: [
-          { label: 'Items', to: '/inventory/items', icon: Package },
-          { label: 'Stock Adjustment', to: '/inventory/adjustments', icon: Boxes },
+          { label: 'Items', to: '/inventory/items', icon: Package, permission: 'inventory:view' },
+          { label: 'Stock Adjustment', to: '/inventory/adjustments', icon: Boxes, permission: 'inventory:view' },
         ],
       },
     ],
@@ -111,8 +123,8 @@ export const NAV: NavGroup[] = [
         label: 'Parties',
         icon: Users2,
         items: [
-          { label: 'Customers', to: '/parties/customers', icon: Users2 },
-          { label: 'Suppliers', to: '/parties/suppliers', icon: Building2 },
+          { label: 'Customers', to: '/parties/customers', icon: Users2, permission: 'parties:manage' },
+          { label: 'Suppliers', to: '/parties/suppliers', icon: Building2, permission: 'parties:manage' },
         ],
       },
     ],
@@ -123,7 +135,7 @@ export const NAV: NavGroup[] = [
       {
         label: 'Reports',
         icon: BarChart3,
-        items: [{ label: 'Reports & Analytics', to: '/reports', icon: BarChart3 }],
+        items: [{ label: 'Reports & Analytics', to: '/reports', icon: BarChart3, permission: 'reports:view' }],
       },
     ],
   },
@@ -134,10 +146,10 @@ export const NAV: NavGroup[] = [
         label: 'Settings',
         icon: Settings,
         items: [
-          { label: 'Company Profile', to: '/settings/company', icon: Building },
-          { label: 'Users', to: '/settings/users', icon: UserCheck },
-          { label: 'Roles & Permissions', to: '/settings/roles', icon: ShieldCheck },
-          { label: 'GST / Tax', to: '/settings/tax', icon: Percent },
+          { label: 'Company Profile', to: '/settings/company', icon: Building, permission: 'settings:manage' },
+          { label: 'Users', to: '/settings/users', icon: UserCheck, permission: 'users:manage' },
+          { label: 'Roles & Permissions', to: '/settings/roles', icon: ShieldCheck, permission: 'users:manage' },
+          { label: 'GST / Tax', to: '/settings/tax', icon: Percent, permission: 'settings:manage' },
         ],
       },
     ],
